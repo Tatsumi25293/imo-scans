@@ -1,5 +1,5 @@
 import { SeriesCard } from "@/components/series/SeriesCard";
-import { mockSeries, mockGenres } from "@/lib/mock-data";
+import { mockGenres } from "@/lib/mock-data";
 import Link from "next/link";
 import { BookOpen } from "lucide-react";
 import type { Metadata } from "next";
@@ -9,7 +9,21 @@ export const metadata: Metadata = {
   description: "تصفح جميع المانهوا والويبتون المتاحة مترجمة إلى العربية",
 };
 
-export default function SeriesListPage() {
+import { createClient } from "@/lib/supabase/server";
+
+export default async function SeriesListPage() {
+  const supabase = await createClient();
+  const { data: dbSeries } = await supabase
+    .from("series")
+    .select(`*, genres:series_genres(genre:genres(*)), chapters(count)`)
+    .order("created_at", { ascending: false });
+
+  const seriesList = dbSeries?.map(s => ({
+    ...s,
+    genres: s.genres?.map((g: any) => g.genre) || [],
+    chapters_count: s.chapters?.[0]?.count || 0
+  })) || [];
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 page-transition">
       {/* Header */}
@@ -51,11 +65,15 @@ export default function SeriesListPage() {
 
       {/* Series Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 pb-20 md:pb-4">
-        {mockSeries.map((series, i) => (
+        {seriesList.length > 0 ? seriesList.map((series, i) => (
           <div key={series.id} style={{ animation: `slide-up 0.4s ease-out ${i * 0.06}s both` }}>
             <SeriesCard series={series} />
           </div>
-        ))}
+        )) : (
+          <div className="col-span-full py-20 text-center">
+            <p className="text-lg" style={{ color: "var(--text-muted)" }}>لا توجد أعمال متاحة حالياً.</p>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,9 +1,11 @@
 import { SeriesCard } from "@/components/series/SeriesCard";
-import { getSeriesByGenre, mockGenres } from "@/lib/mock-data";
+import { mockGenres } from "@/lib/mock-data";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Grid3X3 } from "lucide-react";
 import type { Metadata } from "next";
+
+import { createClient } from "@/lib/supabase/server";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -27,7 +29,22 @@ export default async function GenrePage({ params }: PageProps) {
     notFound();
   }
 
-  const seriesList = getSeriesByGenre(slug);
+  const supabase = await createClient();
+  const { data: dbSeries } = await supabase
+    .from("series")
+    .select(`
+      *,
+      genres:series_genres!inner(genre:genres(*)),
+      chapters(count)
+    `)
+    .eq("series_genres.genre.slug", slug)
+    .order("created_at", { ascending: false });
+
+  const seriesList = dbSeries?.map(s => ({
+    ...s,
+    genres: s.genres?.map((g: any) => g.genre) || [],
+    chapters_count: s.chapters?.[0]?.count || 0
+  })) || [];
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 page-transition">

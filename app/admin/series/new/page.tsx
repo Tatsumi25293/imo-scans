@@ -59,8 +59,9 @@ export default function NewSeriesPage() {
       if (name === "title") {
         next.slug = value
           .toLowerCase()
-          .replace(/\s+/g, "-")
-          .replace(/[^a-z0-9-]/g, "");
+          .trim()
+          .replace(/\s+/g, "-") // Replace spaces with -
+          .replace(/[^\u0600-\u06FFa-z0-9-]/g, ""); // Keep Arabic chars, letters, numbers and hyphens
       }
       return next;
     });

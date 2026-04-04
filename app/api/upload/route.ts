@@ -15,6 +15,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "لم يتم إرسال ملف" }, { status: 400 });
     }
 
+    console.log("DEBUG: VULTR_ACCESS_KEY is", typeof process.env.VULTR_ACCESS_KEY, `"${process.env.VULTR_ACCESS_KEY}"`);
+    console.log("DEBUG: process.cwd() is", process.cwd());
+
     const buffer = Buffer.from(await file.arrayBuffer());
     const key = `${folder}/${fileName}`;
     const url = await uploadToVultr(key, buffer, file.type || "image/jpeg");

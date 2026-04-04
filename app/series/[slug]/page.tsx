@@ -30,7 +30,7 @@ export default async function SeriesDetailPage({ params }: PageProps) {
     .from("series")
     .select(`
       *,
-      genres (*),
+      genres:series_genres(genre:genres(*)),
       chapters (*)
     `)
     .eq("slug", slug)
@@ -38,9 +38,14 @@ export default async function SeriesDetailPage({ params }: PageProps) {
 
   if (!series) notFound();
 
+  const formattedSeries = {
+    ...series,
+    genres: series.genres?.map((g: any) => g.genre) || []
+  };
+
   // Sort chapters
-  const sortedChapters = [...(series.chapters || [])].sort((a, b) => b.chapter_number - a.chapter_number);
-  const chaptersCount = series.chapters?.length || 0;
+  const sortedChapters = [...(formattedSeries.chapters || [])].sort((a, b) => b.chapter_number - a.chapter_number);
+  const chaptersCount = formattedSeries.chapters?.length || 0;
 
   return (
     <div className="page-transition">
@@ -74,8 +79,8 @@ export default async function SeriesDetailPage({ params }: PageProps) {
           <div className="w-40 md:w-48 lg:w-52 flex-shrink-0 mx-auto md:mx-0">
             <div className="relative aspect-[3/4] rounded-xl overflow-hidden shadow-2xl ring-4 ring-[var(--bg-primary)]">
               <Image
-                src={series.cover_image_url || "/placeholder.png"}
-                alt={series.title}
+                src={formattedSeries.cover_image_url || "/placeholder.png"}
+                alt={formattedSeries.title}
                 fill
                 className="object-cover"
                 sizes="208px"
@@ -88,36 +93,36 @@ export default async function SeriesDetailPage({ params }: PageProps) {
           <div className="flex-1 text-center md:text-right pt-0 md:pt-8 lg:pt-10 min-w-0">
             {/* Badges */}
             <div className="flex items-center gap-2 justify-center md:justify-start mb-3 flex-wrap">
-              <span className={`px-3 py-1 rounded-lg text-xs font-bold text-white ${getStatusColor(series.status)}`}>
-                {getStatusLabel(series.status)}
+              <span className={`px-3 py-1 rounded-lg text-xs font-bold text-white ${getStatusColor(formattedSeries.status)}`}>
+                {getStatusLabel(formattedSeries.status)}
               </span>
               <span className="px-3 py-1 rounded-lg text-xs font-medium" style={{ background: "var(--bg-tertiary)", color: "var(--text-secondary)" }}>
-                {getTypeLabel(series.type)}
+                {getTypeLabel(formattedSeries.type)}
               </span>
               <span className="flex items-center gap-1 text-sm text-amber-400">
                 <Star className="w-4 h-4 fill-amber-400" />
-                {series.rating}
+                {formattedSeries.rating}
               </span>
             </div>
 
             <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 leading-tight text-glow" style={{ color: "var(--text-primary)" }}>
-              {series.title}
+              {formattedSeries.title}
             </h1>
 
             {/* Meta */}
             <div className="flex items-center gap-5 justify-center md:justify-start mb-5 flex-wrap text-sm" style={{ color: "var(--text-secondary)" }}>
-              {series.author && (
+              {formattedSeries.author && (
                 <span className="flex items-center gap-1.5 whitespace-nowrap">
-                  <User className="w-4 h-4 flex-shrink-0" /> {series.author}
+                  <User className="w-4 h-4 flex-shrink-0" /> {formattedSeries.author}
                 </span>
               )}
-              {series.artist && (
+              {formattedSeries.artist && (
                 <span className="flex items-center gap-1.5 whitespace-nowrap">
-                  <Paintbrush className="w-4 h-4 flex-shrink-0" /> {series.artist}
+                  <Paintbrush className="w-4 h-4 flex-shrink-0" /> {formattedSeries.artist}
                 </span>
               )}
               <span className="flex items-center gap-1.5 whitespace-nowrap">
-                <Eye className="w-4 h-4 flex-shrink-0" /> {formatNumber(series.views_count)}
+                <Eye className="w-4 h-4 flex-shrink-0" /> {formatNumber(formattedSeries.views_count)}
               </span>
               <span className="flex items-center gap-1.5 whitespace-nowrap">
                 <BookOpen className="w-4 h-4 flex-shrink-0" /> {chaptersCount} فصل
@@ -126,7 +131,7 @@ export default async function SeriesDetailPage({ params }: PageProps) {
 
             {/* Genres */}
             <div className="flex flex-wrap gap-2 justify-center md:justify-start mb-5">
-              {series.genres?.map((genre: any) => (
+              {formattedSeries.genres?.map((genre: any) => (
                 <Link
                   key={genre.id}
                   href={`/genres/${genre.slug}`}
@@ -140,14 +145,14 @@ export default async function SeriesDetailPage({ params }: PageProps) {
 
             {/* Description */}
             <p className="text-sm leading-[1.8] mb-6 max-w-2xl" style={{ color: "var(--text-secondary)" }}>
-              {series.description}
+              {formattedSeries.description}
             </p>
 
             {/* CTA */}
             <div className="flex items-center gap-3 justify-center md:justify-start flex-wrap">
               {sortedChapters.length > 0 && (
                 <Link
-                  href={`/series/${series.slug}/${sortedChapters[sortedChapters.length - 1].chapter_number}`}
+                  href={`/series/${formattedSeries.slug}/${sortedChapters[sortedChapters.length - 1].chapter_number}`}
                   className="btn-primary flex-1 sm:flex-none !px-8 !py-3.5 !text-base"
                 >
                   <BookOpen className="w-4 h-4" />
@@ -156,7 +161,7 @@ export default async function SeriesDetailPage({ params }: PageProps) {
               )}
               {sortedChapters[0] && (
                 <Link
-                  href={`/series/${series.slug}/${sortedChapters[0].chapter_number}`}
+                  href={`/series/${formattedSeries.slug}/${sortedChapters[0].chapter_number}`}
                   className="btn-secondary"
                 >
                   آخر فصل ({sortedChapters[0].chapter_number})

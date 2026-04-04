@@ -6,7 +6,7 @@ import { mockGenres } from "@/lib/mock-data";
 import { formatNumber } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/server";
 
-export const revalidate = 60; // Revalidate every 60 seconds
+export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const supabase = await createClient();
@@ -14,24 +14,25 @@ export default async function HomePage() {
   // Fetch from Supabase
   const { data: featuredData } = await supabase
     .from("series")
-    .select(`*, genres(*), chapters(count)`)
+    .select(`*, genres:series_genres(genre:genres(*)), chapters(count)`)
     .limit(4)
-    .order("views_count", { ascending: false }); // In real app, we'd use is_featured
+    .order("views_count", { ascending: false });
 
   const { data: popularData } = await supabase
     .from("series")
-    .select(`*, genres(*), chapters(count)`)
+    .select(`*, genres:series_genres(genre:genres(*)), chapters(count)`)
     .limit(6)
     .order("views_count", { ascending: false });
 
   const { data: latestData } = await supabase
     .from("series")
-    .select(`*, genres(*), chapters(count)`)
+    .select(`*, genres:series_genres(genre:genres(*)), chapters(count)`)
     .limit(8)
     .order("updated_at", { ascending: false });
 
   const formatSeriesList = (data: any[]) => data?.map(s => ({
     ...s,
+    genres: s.genres?.map((g: any) => g.genre) || [],
     chapters_count: s.chapters?.[0]?.count || 0
   })) || [];
 
