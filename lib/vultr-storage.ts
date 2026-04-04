@@ -1,18 +1,27 @@
 import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 
-if (!process.env.VULTR_ACCESS_KEY || !process.env.VULTR_SECRET_KEY) {
-  console.warn("⚠️ Vultr object storage credentials are not set in environment variables. Uploads will fail.");
-}
+let _s3Client: S3Client | null = null;
 
-export const vultrS3 = new S3Client({
-  region: process.env.VULTR_REGION || "ams1",
-  endpoint: process.env.VULTR_ENDPOINT || "https://ams1.vultrobjects.com",
-  credentials: {
-    accessKeyId: process.env.VULTR_ACCESS_KEY || "",
-    secretAccessKey: process.env.VULTR_SECRET_KEY || "",
-  },
-  forcePathStyle: false, // Vultr uses virtual-hosted-style
-});
+export function getVultrClient(): S3Client {
+  if (_s3Client) return _s3Client;
+
+  if (!process.env.VULTR_ACCESS_KEY || !process.env.VULTR_SECRET_KEY) {
+    console.error("Vultr Keys missing:", { access: !!process.env.VULTR_ACCESS_KEY, secret: !!process.env.VULTR_SECRET_KEY });
+    throw new Error("مفاتيح Vultr غير موجودة. يرجى إغلاق الخادم بالكامل، والتأكد من ملف .env.local، ثم إعادة تشغيله.");
+  }
+
+  _s3Client = new S3Client({
+    region: process.env.VULTR_REGION || "ams1",
+    endpoint: process.env.VULTR_ENDPOINT || "https://ams1.vultrobjects.com",
+    credentials: {
+      accessKeyId: process.env.VULTR_ACCESS_KEY,
+      secretAccessKey: process.env.VULTR_SECRET_KEY,
+    },
+    forcePathStyle: false, // Vultr uses virtual-hosted-style
+  });
+
+  return _s3Client;
+}
 
 const BUCKET = process.env.VULTR_BUCKET || "imo-scans";
 const CDN_URL = process.env.NEXT_PUBLIC_VULTR_CDN_URL || "https://imo-scans.ams1.vultrobjects.com";
@@ -34,7 +43,8 @@ export async function uploadToVultr(
     ACL: "public-read",
   });
 
-  await vultrS3.send(command);
+  const client = getVultrClient();
+  await client.send(command);
   return `${CDN_URL}/${key}`;
 }
 
@@ -46,7 +56,8 @@ export async function deleteFromVultr(key: string): Promise<void> {
     Bucket: BUCKET,
     Key: key,
   });
-  await vultrS3.send(command);
+  const client = getVultrClient();
+  await client.send(command);
 }
 
 /**
