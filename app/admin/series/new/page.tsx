@@ -81,12 +81,18 @@ export default function NewSeriesPage() {
     setErrorMsg("");
 
     try {
+      const cleanSlug = formData.slug
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, "-")
+        .replace(/[^\u0600-\u06FFa-z0-9-]/g, "");
+
       let cover_image_url = null;
 
       // 1. Upload Cover Image to Vultr Object Storage
       if (coverFile) {
         const fileExt = coverFile.name.split(".").pop() || "jpg";
-        const fileName = `${formData.slug}-${Date.now()}.${fileExt}`;
+        const fileName = `${cleanSlug}-${Date.now()}.${fileExt}`;
         const uploadFormData = new FormData();
         uploadFormData.append("file", coverFile);
         uploadFormData.append("folder", "covers");
@@ -113,7 +119,7 @@ export default function NewSeriesPage() {
         .from("series")
         .insert({
           title: formData.title,
-          slug: formData.slug,
+          slug: cleanSlug,
           description: formData.description,
           author: formData.author,
           artist: formData.artist,
