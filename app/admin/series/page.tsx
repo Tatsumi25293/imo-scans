@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Plus, Edit, Trash2, Upload, Eye, Loader2 } from "lucide-react";
+import { Plus, Edit, Trash2, Upload, Eye, Loader2, List } from "lucide-react";
 import { formatNumber, getStatusLabel, getStatusColor } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 
@@ -126,6 +126,7 @@ export default function AdminSeriesPage() {
                       <td className="px-5 py-3.5">
                         <div className="flex items-center gap-1">
                           <Link href={`/admin/chapters/${s.id}/new`} className="p-2 rounded-lg hover:bg-emerald-500/10 text-emerald-400 transition-colors" title="رفع فصل"><Upload className="w-4 h-4" /></Link>
+                          <Link href={`/admin/chapters/${s.id}`} className="p-2 rounded-lg hover:bg-amber-500/10 text-amber-400 transition-colors" title="إدارة الفصول"><List className="w-4 h-4" /></Link>
                           <Link href={`/series/${s.slug}`} className="p-2 rounded-lg hover:bg-primary-500/10 text-primary-400 transition-colors" title="عرض بالموقع"><Eye className="w-4 h-4" /></Link>
                           <Link href={`/admin/series/${s.id}/edit`} className="p-2 rounded-lg hover:bg-primary-500/10 text-primary-400 transition-colors" title="تعديل"><Edit className="w-4 h-4" /></Link>
                           <button onClick={() => handleDelete(s.id, s.title)} className="p-2 rounded-lg hover:bg-red-500/10 text-red-400 transition-colors" title="حذف"><Trash2 className="w-4 h-4" /></button>
@@ -155,6 +156,7 @@ export default function AdminSeriesPage() {
                       </div>
                       <div className="flex items-center gap-1">
                         <Link href={`/admin/chapters/${s.id}/new`} className="px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-500/10 text-emerald-400">رفع فصل</Link>
+                        <Link href={`/admin/chapters/${s.id}`} className="p-1.5 rounded-lg hover:bg-amber-500/10 text-amber-400"><List className="w-4 h-4" /></Link>
                         <Link href={`/admin/series/${s.id}/edit`} className="p-1.5 rounded-lg hover:bg-primary-500/10 text-primary-400"><Edit className="w-4 h-4" /></Link>
                         <button onClick={() => handleDelete(s.id, s.title)} className="p-1.5 rounded-lg hover:bg-red-500/10 text-red-400"><Trash2 className="w-4 h-4" /></button>
                       </div>
