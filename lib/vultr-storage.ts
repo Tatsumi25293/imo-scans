@@ -1,12 +1,15 @@
 import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 
-// Vultr Object Storage is S3-compatible
+if (!process.env.VULTR_ACCESS_KEY || !process.env.VULTR_SECRET_KEY) {
+  console.warn("⚠️ Vultr object storage credentials are not set in environment variables. Uploads will fail.");
+}
+
 export const vultrS3 = new S3Client({
   region: process.env.VULTR_REGION || "ams1",
   endpoint: process.env.VULTR_ENDPOINT || "https://ams1.vultrobjects.com",
   credentials: {
-    accessKeyId: process.env.VULTR_ACCESS_KEY!,
-    secretAccessKey: process.env.VULTR_SECRET_KEY!,
+    accessKeyId: process.env.VULTR_ACCESS_KEY || "",
+    secretAccessKey: process.env.VULTR_SECRET_KEY || "",
   },
   forcePathStyle: false, // Vultr uses virtual-hosted-style
 });
