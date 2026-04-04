@@ -155,21 +155,21 @@ export default async function AdminDashboard() {
       </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
         <Link
           href="/admin/series/new"
           className="flex items-center gap-4 p-5 rounded-xl transition-all card-hover"
           style={{ background: "var(--card-bg)", border: "1px solid var(--border-color)" }}
         >
-          <div className="p-3 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-600/20">
+          <div className="p-3 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-600/20 flex-shrink-0">
             <BookOpen className="w-6 h-6 text-primary-400" />
           </div>
-          <div>
+          <div className="min-w-0">
             <p className="font-bold text-sm" style={{ color: "var(--text-primary)" }}>
-              إضافة مانهوا جديدة
+              إضافة مانهوا
             </p>
             <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-              أضف مانهوا جديدة مع صورة الغلاف والتفاصيل
+              مع صورة الغلاف والتفاصيل
             </p>
           </div>
         </Link>
@@ -178,15 +178,32 @@ export default async function AdminDashboard() {
           className="flex items-center gap-4 p-5 rounded-xl transition-all card-hover"
           style={{ background: "var(--card-bg)", border: "1px solid var(--border-color)" }}
         >
-          <div className="p-3 rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-600/20">
+          <div className="p-3 rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-600/20 flex-shrink-0">
             <Layers className="w-6 h-6 text-emerald-400" />
           </div>
-          <div>
+          <div className="min-w-0">
             <p className="font-bold text-sm" style={{ color: "var(--text-primary)" }}>
-              رفع فصل جديد
+              رفع فصل
             </p>
             <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-              ارفع فصلاً جديداً مع صور متعددة
+              صور منفردة أو ZIP
+            </p>
+          </div>
+        </Link>
+        <Link
+          href="/admin/series"
+          className="flex items-center gap-4 p-5 rounded-xl transition-all card-hover"
+          style={{ background: "var(--card-bg)", border: "1px solid var(--border-color)" }}
+        >
+          <div className="p-3 rounded-xl bg-gradient-to-br from-violet-500/20 to-purple-600/20 flex-shrink-0">
+            <TrendingUp className="w-6 h-6 text-violet-400" />
+          </div>
+          <div className="min-w-0">
+            <p className="font-bold text-sm" style={{ color: "var(--text-primary)" }}>
+              إدارة المانهوا
+            </p>
+            <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+              تعديل وحذف الأعمال
             </p>
           </div>
         </Link>
