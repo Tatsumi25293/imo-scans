@@ -192,34 +192,82 @@ export default function NewChapterPage({
     return uploadedPages;
   };
 
-  /* ─── Upload ZIP ─── */
+  /* ─── Upload ZIP (Extracted locally via JSZip) ─── */
   const uploadZip = async (chapterData: any) => {
     if (!zipFile) throw new Error("لم يتم اختيار ملف ZIP");
 
-    setUploadProgress(10);
-    const formData = new FormData();
-    formData.append("zip", zipFile);
-    formData.append("seriesId", resolvedParams.seriesId);
-    formData.append("chapterId", chapterData.id);
+    setUploadProgress(5);
+    const jszipModule = await import("jszip");
+    const JSZipConstructor = jszipModule.default || jszipModule;
+    const JSZipInstance = new (JSZipConstructor as any)();
+    const zip = await JSZipInstance.loadAsync(zipFile);
 
-    const res = await fetch("/api/upload-zip", {
-      method: "POST",
-      body: formData,
-    });
+    const fileEntries = Object.entries(zip.files).filter(
+      ([name, f]: [string, any]) =>
+        !f.dir &&
+        !name.startsWith("__MACOSX") &&
+        /\.(jpg|jpeg|png|webp|gif)$/i.test(name)
+    );
 
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.error || "فشل رفع ملف ZIP");
+    if (fileEntries.length === 0) {
+      throw new Error("ملف ZIP فارغ أو لا يحتوي على صور مدعومة.");
     }
 
-    setUploadProgress(80);
-    const { pages } = await res.json();
-    setUploadProgress(90);
+    // Natural sort by filename
+    fileEntries.sort(([a], [b]) => {
+      const aName = a.split("/").pop() || a;
+      const bName = b.split("/").pop() || b;
+      return aName.localeCompare(bName, undefined, {
+        numeric: true,
+        sensitivity: "base",
+      });
+    });
 
-    return pages.map((p: any) => ({
-      chapter_id: chapterData.id,
-      ...p,
-    }));
+    const uploadedPages = [];
+
+    for (let i = 0; i < fileEntries.length; i++) {
+      const [name, zipObj] = fileEntries[i] as [string, any];
+      const blob = await zipObj.async("blob");
+      const ext = name.split(".").pop()?.toLowerCase() || "jpg";
+      const fileObj = new File([blob], `page_${i + 1}.${ext}`, {
+        type: blob.type || "image/jpeg",
+      });
+
+      const formData = new FormData();
+      formData.append("file", fileObj);
+      formData.append(
+        "folder",
+        `chapters/${resolvedParams.seriesId}/${chapterData.id}`
+      );
+      formData.append("fileName", fileObj.name);
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        let errMsg = "خطأ غير معروف";
+        try {
+          const err = await res.json();
+          errMsg = err.error;
+        } catch {
+          /* ignore */
+        }
+        throw new Error(`فشل رفع الصورة ${i + 1} من ZIP: ${errMsg}`);
+      }
+
+      const { url } = await res.json();
+      uploadedPages.push({
+        chapter_id: chapterData.id,
+        page_number: i + 1,
+        image_url: url,
+      });
+
+      setUploadProgress(Math.round(((i + 1) / fileEntries.length) * 100));
+    }
+
+    return uploadedPages;
   };
 
   /* ─── Main submit ─── */
