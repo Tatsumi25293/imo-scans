@@ -290,8 +290,11 @@ export default function NewChapterPage({
     setErrorMsg("");
     setUploadProgress(0);
 
+    let createdChapterId: string | null = null;
+
     try {
       const chapterData = await createChapter(publish);
+      createdChapterId = chapterData.id;
 
       const uploadedPages =
         uploadMode === "images"
@@ -315,6 +318,11 @@ export default function NewChapterPage({
       console.error(err);
       setErrorMsg(err.message || "حدث خطأ غير معروف.");
       setUploadStatus("error");
+
+      // Rollback database if chapter was created but upload failed
+      if (createdChapterId) {
+        await supabase.from("chapters").delete().eq("id", createdChapterId);
+      }
     } finally {
       setIsUploading(false);
     }
