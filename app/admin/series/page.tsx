@@ -127,7 +127,7 @@ export default function AdminSeriesPage() {
                         <div className="flex items-center gap-1">
                           <Link href={`/admin/chapters/${s.id}/new`} className="p-2 rounded-lg hover:bg-emerald-500/10 text-emerald-400 transition-colors" title="رفع فصل"><Upload className="w-4 h-4" /></Link>
                           <Link href={`/series/${s.slug}`} className="p-2 rounded-lg hover:bg-primary-500/10 text-primary-400 transition-colors" title="عرض بالموقع"><Eye className="w-4 h-4" /></Link>
-                          <button className="p-2 rounded-lg hover:bg-primary-500/10 text-primary-400 transition-colors" title="تعديل"><Edit className="w-4 h-4" /></button>
+                          <Link href={`/admin/series/${s.id}/edit`} className="p-2 rounded-lg hover:bg-primary-500/10 text-primary-400 transition-colors" title="تعديل"><Edit className="w-4 h-4" /></Link>
                           <button onClick={() => handleDelete(s.id, s.title)} className="p-2 rounded-lg hover:bg-red-500/10 text-red-400 transition-colors" title="حذف"><Trash2 className="w-4 h-4" /></button>
                         </div>
                       </td>
@@ -155,6 +155,7 @@ export default function AdminSeriesPage() {
                       </div>
                       <div className="flex items-center gap-1">
                         <Link href={`/admin/chapters/${s.id}/new`} className="px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-500/10 text-emerald-400">رفع فصل</Link>
+                        <Link href={`/admin/series/${s.id}/edit`} className="p-1.5 rounded-lg hover:bg-primary-500/10 text-primary-400"><Edit className="w-4 h-4" /></Link>
                         <button onClick={() => handleDelete(s.id, s.title)} className="p-1.5 rounded-lg hover:bg-red-500/10 text-red-400"><Trash2 className="w-4 h-4" /></button>
                       </div>
                     </div>
