@@ -139,3 +139,20 @@ INSERT INTO genres (name, slug) VALUES
   ('حياة مدرسية', 'school-life'),
   ('فنون قتالية', 'martial-arts')
 ON CONFLICT (slug) DO NOTHING;
+
+-- =============================================
+-- Functions for View Counting (RPC)
+-- =============================================
+CREATE OR REPLACE FUNCTION increment_series_views(series_id_param UUID)
+RETURNS void AS $$
+BEGIN
+  UPDATE series SET views_count = views_count + 1 WHERE id = series_id_param;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE OR REPLACE FUNCTION increment_chapter_views(chapter_id_param UUID)
+RETURNS void AS $$
+BEGIN
+  UPDATE chapters SET views_count = views_count + 1 WHERE id = chapter_id_param;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;

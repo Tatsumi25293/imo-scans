@@ -5,6 +5,7 @@ import { Star, Eye, BookOpen, User, Paintbrush, ArrowLeft, Clock } from "lucide-
 import { formatNumber, formatDate, getStatusLabel, getStatusColor, getTypeLabel } from "@/lib/utils";
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
+import ViewTracker from "@/components/view-tracker";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -49,6 +50,7 @@ export default async function SeriesDetailPage({ params }: PageProps) {
 
   return (
     <div className="page-transition">
+      <ViewTracker type="series" id={series.id} />
       {/* Hero Banner */}
       <div className="relative h-[280px] lg:h-[350px]">
         <Image

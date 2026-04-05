@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ChevronRight, ChevronLeft, Home, List, Settings } from "lucide-react";
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
+import ViewTracker from "@/components/view-tracker";
 
 interface PageProps {
   params: Promise<{ slug: string; chapter: string }>;
@@ -54,6 +55,7 @@ export default async function ChapterReaderPage({ params }: PageProps) {
 
   return (
     <div className="bg-[var(--bg-primary)] min-h-screen">
+      <ViewTracker type="chapter" id={currentChapter.id} />
       {/* Reader Header */}
       <header
         className="sticky top-0 z-50 transition-transform duration-300"
