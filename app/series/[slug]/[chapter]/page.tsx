@@ -5,6 +5,7 @@ import { ChevronRight, ChevronLeft, Home, List, Settings } from "lucide-react";
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import ViewTracker from "@/components/view-tracker";
+import CommentSection from "@/components/comments/CommentSection";
 
 interface PageProps {
   params: Promise<{ slug: string; chapter: string }>;
@@ -165,6 +166,11 @@ export default async function ChapterReaderPage({ params }: PageProps) {
           )}
         </div>
       </footer>
+
+      {/* Discussion Area */}
+      <div className="bg-black py-8">
+        <CommentSection chapterId={currentChapter.id} />
+      </div>
     </div>
   );
 }

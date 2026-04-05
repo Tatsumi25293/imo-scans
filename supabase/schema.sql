@@ -156,3 +156,83 @@ BEGIN
   UPDATE chapters SET views_count = views_count + 1 WHERE id = chapter_id_param;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- =============================================
+-- Disqus-Style Comment System
+-- =============================================
+
+-- 8. جدول الملفات الشخصية (Profiles)
+CREATE TABLE IF NOT EXISTS profiles (
+  id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
+  username TEXT UNIQUE NOT NULL,
+  avatar_url TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- تريجر لإنشاء ملف شخصي تلقائياً عند التسجيل
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS trigger AS $$
+BEGIN
+  INSERT INTO public.profiles (id, username, avatar_url)
+  VALUES (
+    new.id,
+    COALESCE(new.raw_user_meta_data->>'username', 'user_' || substr(new.id::text, 1, 8)),
+    new.raw_user_meta_data->>'avatar_url'
+  );
+  RETURN new;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DO $$
+BEGIN
+  -- Check if trigger exists to avoid errors on multiple runs
+  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'on_auth_user_created') THEN
+    CREATE TRIGGER on_auth_user_created
+      AFTER INSERT ON auth.users
+      FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
+  END IF;
+END $$;
+
+-- 9. جدول التعليقات (Comments)
+CREATE TABLE IF NOT EXISTS comments (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  series_id UUID REFERENCES series(id) ON DELETE CASCADE,
+  chapter_id UUID REFERENCES chapters(id) ON DELETE CASCADE,
+  parent_id UUID REFERENCES comments(id) ON DELETE CASCADE,
+  content TEXT NOT NULL,
+  is_edited BOOLEAN DEFAULT false,
+  is_deleted BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_comments_series ON comments(series_id) WHERE series_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_comments_chapter ON comments(chapter_id) WHERE chapter_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_comments_parent ON comments(parent_id) WHERE parent_id IS NOT NULL;
+
+-- 10. جدول التصويتات (Comment Votes)
+CREATE TABLE IF NOT EXISTS comment_votes (
+  comment_id UUID NOT NULL REFERENCES comments(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  is_upvote BOOLEAN NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  PRIMARY KEY (comment_id, user_id)
+);
+
+-- RLS Policies for Profiles, Comments, Votes
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE comments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE comment_votes ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public read profiles" ON profiles FOR SELECT USING (true);
+CREATE POLICY "Users update own profile" ON profiles FOR UPDATE USING (auth.uid() = id);
+
+CREATE POLICY "Public read comments" ON comments FOR SELECT USING (true);
+CREATE POLICY "Authenticated users can insert comments" ON comments FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Users can edit own comments" ON comments FOR UPDATE USING (auth.uid() = user_id);
+CREATE POLICY "Users can delete own comments" ON comments FOR DELETE USING (auth.uid() = user_id);
+
+CREATE POLICY "Public read comment votes" ON comment_votes FOR SELECT USING (true);
+CREATE POLICY "Authenticated users can vote" ON comment_votes FOR ALL USING (auth.uid() = user_id);

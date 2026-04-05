@@ -6,6 +6,7 @@ import { formatNumber, formatDate, getStatusLabel, getStatusColor, getTypeLabel 
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import ViewTracker from "@/components/view-tracker";
+import CommentSection from "@/components/comments/CommentSection";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -228,6 +229,9 @@ export default async function SeriesDetailPage({ params }: PageProps) {
           </div>
         )}
       </div>
+
+      {/* Comments Area */}
+      <CommentSection seriesId={series.id} />
     </div>
   );
 }
