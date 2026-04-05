@@ -90,8 +90,16 @@ export default function CommentSection({ seriesId, chapterId }: CommentSectionPr
       .select(`*, profiles(username, avatar_url), comment_votes(user_id, is_upvote)`)
       .single();
 
-    if (!error && data) {
-      setComments((prev) => [data as any, ...prev]);
+    if (error) {
+      console.error("Error inserting comment:", error);
+      alert("حدث خطأ أثناء إضافة التعليق: " + error.message);
+      return;
+    }
+
+    if (data) {
+      // Ensure comment_votes is initialized as an empty array for new comments
+      const newCommentData = { ...data, comment_votes: data.comment_votes || [] };
+      setComments((prev) => [newCommentData as any, ...prev]);
       if (parentId) {
         setReplyingTo(null);
       } else {
