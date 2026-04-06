@@ -1,7 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ChevronRight, ChevronLeft, Home, List, Settings } from "lucide-react";
+import { ChevronRight, ChevronLeft, Home, List } from "lucide-react";
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import ViewTracker from "@/components/view-tracker";
@@ -56,124 +55,177 @@ export default async function ChapterReaderPage({ params }: PageProps) {
   const prevChapter = currentIndex > 0 ? allChaptersNums[currentIndex - 1] : null;
 
   return (
-    <div className="bg-[var(--bg-primary)] min-h-screen">
-      <ViewTracker type="chapter" id={currentChapter.id} />
-      {/* Reader Header */}
-      <header
-        className="sticky top-0 z-50 transition-transform duration-300"
-        style={{
-          background: "var(--header-bg)",
-          backdropFilter: "blur(16px)",
-          borderBottom: "1px solid var(--border-color)",
-        }}
-      >
-        <div className="max-w-4xl mx-auto px-4 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link
-              href={`/series/${series.slug}`}
-              className="p-2 -ml-2 rounded-lg hover:bg-[var(--card-hover)] transition-colors"
-            >
-              <ChevronRight className="w-5 h-5 flip-rtl" style={{ color: "var(--text-secondary)" }} />
-            </Link>
-            <div className="min-w-0 flex flex-col justify-center">
-              <h1 className="text-sm font-bold truncate" style={{ color: "var(--text-primary)" }}>
-                {series.title}
-              </h1>
-              <p className="text-xs truncate" style={{ color: "var(--text-muted)" }}>
-                الفصل {chapter}
-              </p>
+    <>
+      {/* Hide the global Header/Footer on the chapter reader */}
+      <style>{`
+        /* Hide the site-wide Header and Footer from root layout */
+        body > .min-h-full > div > div > header.sticky,
+        body > .min-h-full > div > div > footer,
+        body header.sticky.glass-header,
+        body > footer,
+        body .min-h-full > div > div > header:first-child,
+        body .min-h-full > div > div > footer:last-child {
+          display: none !important;
+        }
+        /* Override root layout's main.flex-1 wrapper */
+        body {
+          overflow-x: hidden !important;
+        }
+        body > .min-h-full,
+        body > .min-h-full > div,
+        body > .min-h-full > div > div,
+        body > .min-h-full > div > div > main {
+          width: 100% !important;
+          max-width: 100% !important;
+          padding: 0 !important;
+          margin: 0 !important;
+          overflow-x: hidden !important;
+        }
+        /* Ensure the chapter page takes full width with no constraints */
+        .chapter-reader-root {
+          width: 100% !important;
+          max-width: 100% !important;
+          margin: 0 auto !important;
+          padding: 0 !important;
+          overflow-x: hidden !important;
+          position: relative;
+        }
+        .chapter-reader-root img {
+          display: block !important;
+          width: 100% !important;
+          height: auto !important;
+          max-width: 100% !important;
+          margin: 0 auto !important;
+          padding: 0 !important;
+          border: none !important;
+          object-fit: contain !important;
+        }
+        .chapter-images-container {
+          width: 100% !important;
+          max-width: 100% !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          font-size: 0;
+          line-height: 0;
+        }
+        .chapter-images-container > div {
+          width: 100% !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          font-size: 0;
+          line-height: 0;
+        }
+      `}</style>
+
+      <div className="chapter-reader-root" style={{ background: "#000", minHeight: "100vh" }}>
+        <ViewTracker type="chapter" id={currentChapter.id} />
+        
+        {/* Reader Header */}
+        <header
+          className="sticky top-0 z-50"
+          style={{
+            background: "rgba(0,0,0,0.9)",
+            backdropFilter: "blur(16px)",
+            borderBottom: "1px solid rgba(255,255,255,0.1)",
+          }}
+        >
+          <div style={{ maxWidth: "1024px", margin: "0 auto", padding: "0 16px", height: "56px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "16px", minWidth: 0 }}>
+              <Link
+                href={`/series/${series.slug}`}
+                style={{ padding: "8px", borderRadius: "8px" }}
+              >
+                <ChevronRight className="w-5 h-5" style={{ color: "#aaa", transform: "scaleX(-1)" }} />
+              </Link>
+              <div style={{ minWidth: 0 }}>
+                <h1 style={{ fontSize: "14px", fontWeight: 700, color: "#fff", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  {series.title}
+                </h1>
+                <p style={{ fontSize: "12px", color: "#888" }}>
+                  الفصل {chapter}
+                </p>
+              </div>
+            </div>
+
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <Link
+                href="/"
+                style={{ padding: "8px", borderRadius: "8px", display: "none" }}
+                className="sm:!flex"
+              >
+                <Home className="w-5 h-5" style={{ color: "#aaa" }} />
+              </Link>
+              <Link
+                href={`/series/${series.slug}`}
+                style={{ padding: "8px", borderRadius: "8px" }}
+              >
+                <List className="w-5 h-5" style={{ color: "#aaa" }} />
+              </Link>
             </div>
           </div>
+        </header>
 
-          <div className="flex items-center gap-2">
-            <Link
-              href="/"
-              className="p-2 rounded-lg hover:bg-[var(--card-hover)] transition-colors hidden sm:block"
-            >
-              <Home className="w-5 h-5" style={{ color: "var(--text-secondary)" }} />
-            </Link>
-            <Link
-              href={`/series/${series.slug}`}
-              className="p-2 rounded-lg hover:bg-[var(--card-hover)] transition-colors"
-            >
-              <List className="w-5 h-5" style={{ color: "var(--text-secondary)" }} />
-            </Link>
-            <button className="p-2 rounded-lg hover:bg-[var(--card-hover)] transition-colors">
-              <Settings className="w-5 h-5" style={{ color: "var(--text-secondary)" }} />
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* Reader Content */}
-      <ScrollToTop />
-      <main className="w-full bg-black min-h-screen p-0 m-0 max-w-none">
-        {pages && pages.length > 0 ? (
-          <div className="flex flex-col w-full items-center m-0 p-0">
-            {pages.map((page, i) => (
-              <div key={page.id} className="w-full m-0 p-0 leading-[0]">
+        {/* Reader Content - Full Width Images */}
+        <ScrollToTop />
+        <div className="chapter-images-container">
+          {pages && pages.length > 0 ? (
+            pages.map((page, i) => (
+              <div key={page.id}>
                 <img
                   src={page.image_url}
                   alt={`صفحة ${page.page_number}`}
                   loading={i < 3 ? "eager" : "lazy"}
-                  className="block m-0 p-0 pointer-events-none"
-                  style={{ 
-                    display: "block",
-                    width: "100%",
-                    height: "auto",
-                    maxWidth: "100%",
-                    minWidth: "100%",
-                  }}
+                  className="w-full max-w-full h-auto object-contain mx-auto"
                 />
               </div>
-            ))}
-          </div>
-        ) : (
-          <div className="flex items-center justify-center min-h-[50vh]">
-            <p className="text-gray-400">لا توجد صور في هذا الفصل بعد.</p>
-          </div>
-        )}
-      </main>
-
-      {/* Reader Footer Navigation */}
-      <footer
-        className="py-6"
-        style={{
-          background: "var(--header-bg)",
-          borderTop: "1px solid var(--border-color)",
-        }}
-      >
-        <div className="max-w-2xl mx-auto px-4 flex items-center justify-between">
-          {prevChapter ? (
-            <Link
-              href={`/series/${series.slug}/${prevChapter}`}
-              className="btn-secondary"
-            >
-              <ChevronRight className="w-5 h-5 flip-rtl" />
-              الفصل السابق
-            </Link>
+            ))
           ) : (
-            <div /> // Spacer
-          )}
-
-          {nextChapter ? (
-            <Link
-              href={`/series/${series.slug}/${nextChapter}`}
-              className="btn-primary"
-            >
-              الفصل التالي
-              <ChevronLeft className="w-5 h-5 flip-rtl" />
-            </Link>
-          ) : (
-            <div className="px-6 py-2.5 text-sm text-gray-500 font-bold bg-white/5 rounded-full">نهاية الفصول</div>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "50vh" }}>
+              <p style={{ color: "#888", fontSize: "14px" }}>لا توجد صور في هذا الفصل بعد.</p>
+            </div>
           )}
         </div>
-      </footer>
 
-      {/* Discussion Area */}
-      <div className="bg-black py-8">
-        <CommentSection chapterId={currentChapter.id} />
+        {/* Reader Footer Navigation */}
+        <footer
+          style={{
+            padding: "24px 0",
+            background: "rgba(0,0,0,0.9)",
+            borderTop: "1px solid rgba(255,255,255,0.1)",
+          }}
+        >
+          <div style={{ maxWidth: "640px", margin: "0 auto", padding: "0 16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            {prevChapter ? (
+              <Link
+                href={`/series/${series.slug}/${prevChapter}`}
+                className="btn-secondary"
+              >
+                <ChevronRight className="w-5 h-5 flip-rtl" />
+                الفصل السابق
+              </Link>
+            ) : (
+              <div />
+            )}
+
+            {nextChapter ? (
+              <Link
+                href={`/series/${series.slug}/${nextChapter}`}
+                className="btn-primary"
+              >
+                الفصل التالي
+                <ChevronLeft className="w-5 h-5 flip-rtl" />
+              </Link>
+            ) : (
+              <div style={{ padding: "10px 24px", fontSize: "14px", color: "#666", fontWeight: 700, background: "rgba(255,255,255,0.05)", borderRadius: "9999px" }}>نهاية الفصول</div>
+            )}
+          </div>
+        </footer>
+
+        {/* Discussion Area */}
+        <div style={{ background: "#000", padding: "32px 0" }}>
+          <CommentSection chapterId={currentChapter.id} />
+        </div>
       </div>
-    </div>
+    </>
   );
 }
