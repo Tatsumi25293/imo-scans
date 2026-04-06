@@ -160,26 +160,37 @@ export default function NewChapterPage({
 
     for (let i = 0; i < images.length; i++) {
       const item = images[i];
-      const formData = new FormData();
       const ext = item.file.name.split(".").pop() || "jpg";
-      formData.append("file", item.file);
-      formData.append(
-        "folder",
-        `chapters/${resolvedParams.seriesId}/${chapterData.id}`
-      );
-      formData.append("fileName", `page_${i + 1}.${ext}`);
+      const folder = `chapters/${resolvedParams.seriesId}/${chapterData.id}`;
+      const fileName = `page_${i + 1}.${ext}`;
+      const contentType = item.file.type || "image/jpeg";
 
-      const res = await fetch("/api/upload", {
+      // 1. Get presigned URL
+      const urlRes = await fetch("/api/upload-url", {
         method: "POST",
-        body: formData,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fileName, folder, contentType }),
       });
 
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(`فشل رفع الصورة ${i + 1}: ` + err.error);
+      if (!urlRes.ok) {
+        const err = await urlRes.json();
+        throw new Error(`فشل توليد رابط رفع الصورة ${i + 1}: ` + (err.error || ""));
       }
 
-      const { url } = await res.json();
+      const { uploadUrl, publicUrl } = await urlRes.json();
+
+      // 2. Upload file directly to S3
+      const uploadRes = await fetch(uploadUrl, {
+        method: "PUT",
+        headers: { "Content-Type": contentType },
+        body: item.file,
+      });
+
+      if (!uploadRes.ok) {
+        throw new Error(`فشل رفع الصورة ${i + 1}`);
+      }
+
+      const url = publicUrl;
       uploadedPages.push({
         chapter_id: chapterData.id,
         page_number: i + 1,
@@ -233,31 +244,39 @@ export default function NewChapterPage({
         type: blob.type || "image/jpeg",
       });
 
-      const formData = new FormData();
-      formData.append("file", fileObj);
-      formData.append(
-        "folder",
-        `chapters/${resolvedParams.seriesId}/${chapterData.id}`
-      );
-      formData.append("fileName", fileObj.name);
-
-      const res = await fetch("/api/upload", {
+      const contentType = fileObj.type || "image/jpeg";
+      const folder = `chapters/${resolvedParams.seriesId}/${chapterData.id}`;
+      
+      // 1. Get presigned URL
+      const urlRes = await fetch("/api/upload-url", {
         method: "POST",
-        body: formData,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fileName: fileObj.name, folder, contentType }),
       });
 
-      if (!res.ok) {
+      if (!urlRes.ok) {
         let errMsg = "خطأ غير معروف";
         try {
-          const err = await res.json();
-          errMsg = err.error;
-        } catch {
-          /* ignore */
-        }
-        throw new Error(`فشل رفع الصورة ${i + 1} من ZIP: ${errMsg}`);
+          const err = await urlRes.json();
+          errMsg = err.error || errMsg;
+        } catch { /* ignore */ }
+        throw new Error(`فشل توليد رابط رفع الصورة ${i + 1} من ZIP: ${errMsg}`);
       }
 
-      const { url } = await res.json();
+      const { uploadUrl, publicUrl } = await urlRes.json();
+
+      // 2. Upload file directly to S3
+      const uploadRes = await fetch(uploadUrl, {
+        method: "PUT",
+        headers: { "Content-Type": contentType },
+        body: fileObj,
+      });
+
+      if (!uploadRes.ok) {
+        throw new Error(`فشل رفع الصورة ${i + 1} من ZIP (مباشرة إلى مساحة التخزين)`);
+      }
+
+      const url = publicUrl;
       uploadedPages.push({
         chapter_id: chapterData.id,
         page_number: i + 1,
