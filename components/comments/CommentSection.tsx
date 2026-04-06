@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { useUserStore } from "@/lib/stores/useUserStore";
 import { createClient } from "@/lib/supabase/client";
 import { MessageSquare, ThumbsUp, ThumbsDown, CornerDownLeft, Trash2, Send } from "lucide-react";
@@ -21,6 +21,222 @@ interface CommentSectionProps {
   chapterId?: string;
 }
 
+// ==========================================
+// Emoji Reactions (no account needed)
+// ==========================================
+const REACTIONS = [
+  { emoji: "👍", label: "أعجبني" },
+  { emoji: "❤️", label: "أحببته" },
+  { emoji: "😂", label: "مضحك" },
+  { emoji: "😮", label: "مفاجئ" },
+  { emoji: "😢", label: "حزين" },
+  { emoji: "😡", label: "غاضب" },
+];
+
+type ReactionCounts = Record<string, number>;
+type MyReactions = Record<string, boolean>;
+
+function getVisitorId(): string {
+  if (typeof window === "undefined") return "server";
+  let id = localStorage.getItem("imo_visitor_id");
+  if (!id) {
+    id = "v_" + Math.random().toString(36).substring(2) + Date.now().toString(36);
+    localStorage.setItem("imo_visitor_id", id);
+  }
+  return id;
+}
+
+function getReactionsKey(seriesId?: string, chapterId?: string): string {
+  return `imo_reactions_${chapterId || seriesId || "global"}`;
+}
+
+function loadReactions(key: string): { counts: ReactionCounts; my: MyReactions } {
+  if (typeof window === "undefined") return { counts: {}, my: {} };
+  try {
+    const stored = localStorage.getItem(key);
+    if (stored) return JSON.parse(stored);
+  } catch {}
+  return { counts: {}, my: {} };
+}
+
+function saveReactions(key: string, counts: ReactionCounts, my: MyReactions) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(key, JSON.stringify({ counts, my }));
+}
+
+// ==========================================
+// Reaction Bar Component
+// ==========================================
+function ReactionBar({ seriesId, chapterId }: { seriesId?: string; chapterId?: string }) {
+  const supabase = createClient();
+  const storageKey = getReactionsKey(seriesId, chapterId);
+  const [counts, setCounts] = useState<ReactionCounts>({});
+  const [myReactions, setMyReactions] = useState<MyReactions>({});
+  const [animatingEmoji, setAnimatingEmoji] = useState<string | null>(null);
+
+  useEffect(() => {
+    loadFromSupabase();
+  }, [seriesId, chapterId]);
+
+  const loadFromSupabase = async () => {
+    // Load reactions from Supabase
+    const targetId = chapterId || seriesId;
+    const targetType = chapterId ? "chapter" : "series";
+    
+    if (!targetId) return;
+
+    const { data } = await supabase
+      .from("emoji_reactions")
+      .select("emoji, count")
+      .eq("target_id", targetId)
+      .eq("target_type", targetType);
+
+    if (data) {
+      const dbCounts: ReactionCounts = {};
+      data.forEach((r: any) => { dbCounts[r.emoji] = r.count; });
+      setCounts(dbCounts);
+    }
+
+    // Load what this visitor reacted to
+    const visitorId = getVisitorId();
+    const { data: myData } = await supabase
+      .from("emoji_reaction_visitors")
+      .select("emoji")
+      .eq("target_id", targetId)
+      .eq("target_type", targetType)
+      .eq("visitor_id", visitorId);
+
+    if (myData) {
+      const my: MyReactions = {};
+      myData.forEach((r: any) => { my[r.emoji] = true; });
+      setMyReactions(my);
+    }
+  };
+
+  const toggleReaction = async (emoji: string) => {
+    const targetId = chapterId || seriesId;
+    const targetType = chapterId ? "chapter" : "series";
+    if (!targetId) return;
+
+    const visitorId = getVisitorId();
+    const alreadyReacted = myReactions[emoji];
+
+    // Animate
+    setAnimatingEmoji(emoji);
+    setTimeout(() => setAnimatingEmoji(null), 600);
+
+    if (alreadyReacted) {
+      // Remove reaction
+      setCounts(prev => ({ ...prev, [emoji]: Math.max((prev[emoji] || 1) - 1, 0) }));
+      setMyReactions(prev => { const n = { ...prev }; delete n[emoji]; return n; });
+
+      // Remove from DB
+      await supabase
+        .from("emoji_reaction_visitors")
+        .delete()
+        .eq("target_id", targetId)
+        .eq("target_type", targetType)
+        .eq("visitor_id", visitorId)
+        .eq("emoji", emoji);
+
+      // Decrement count
+      await supabase.rpc("decrement_emoji_reaction", {
+        p_target_id: targetId,
+        p_target_type: targetType,
+        p_emoji: emoji,
+      });
+    } else {
+      // Add reaction
+      setCounts(prev => ({ ...prev, [emoji]: (prev[emoji] || 0) + 1 }));
+      setMyReactions(prev => ({ ...prev, [emoji]: true }));
+
+      // Save visitor reaction
+      await supabase
+        .from("emoji_reaction_visitors")
+        .upsert({
+          target_id: targetId,
+          target_type: targetType,
+          visitor_id: visitorId,
+          emoji,
+        }, { onConflict: "target_id,target_type,visitor_id,emoji" });
+
+      // Increment count
+      await supabase.rpc("increment_emoji_reaction", {
+        p_target_id: targetId,
+        p_target_type: targetType,
+        p_emoji: emoji,
+      });
+    }
+  };
+
+  const totalReactions = Object.values(counts).reduce((a, b) => a + b, 0);
+
+  return (
+    <div className="mb-8">
+      <h4 className="text-sm font-bold mb-3 flex items-center gap-2" style={{ color: "var(--text-secondary)" }}>
+        ✨ تفاعل مع هذا المحتوى
+        {totalReactions > 0 && (
+          <span className="text-xs font-normal px-2 py-0.5 rounded-full" style={{ background: "var(--bg-tertiary)", color: "var(--text-muted)" }}>
+            {totalReactions} تفاعل
+          </span>
+        )}
+      </h4>
+      <div className="flex flex-wrap gap-2">
+        {REACTIONS.map(({ emoji, label }) => {
+          const count = counts[emoji] || 0;
+          const isActive = myReactions[emoji];
+          const isAnimating = animatingEmoji === emoji;
+
+          return (
+            <button
+              key={emoji}
+              onClick={() => toggleReaction(emoji)}
+              title={label}
+              className={`
+                group relative flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-sm font-medium
+                transition-all duration-300 active:scale-90
+                ${isActive
+                  ? "bg-primary-500/15 border-primary-500/40 text-primary-400 shadow-[0_0_12px_rgba(59,130,246,0.15)]"
+                  : "bg-[var(--card-bg)] border-[var(--border-color)] hover:border-primary-500/30 hover:bg-[var(--card-hover)]"
+                }
+              `}
+              style={{ border: "1px solid" }}
+            >
+              <span className={`text-lg transition-transform duration-300 ${isAnimating ? "animate-bounce-emoji" : ""} ${isActive ? "scale-110" : "group-hover:scale-110"}`}>
+                {emoji}
+              </span>
+              {count > 0 && (
+                <span className={`text-xs font-bold ${isActive ? "text-primary-400" : ""}`} style={{ color: isActive ? undefined : "var(--text-muted)" }}>
+                  {count}
+                </span>
+              )}
+              {/* Tooltip */}
+              <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black/90 text-white text-[10px] px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                {label}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+      <style jsx>{`
+        @keyframes bounce-emoji {
+          0%, 100% { transform: scale(1); }
+          25% { transform: scale(1.4) rotate(-10deg); }
+          50% { transform: scale(1.2) rotate(5deg); }
+          75% { transform: scale(1.3) rotate(-3deg); }
+        }
+        .animate-bounce-emoji {
+          animation: bounce-emoji 0.6s ease-in-out;
+        }
+      `}</style>
+    </div>
+  );
+}
+
+
+// ==========================================
+// Time Ago Helper
+// ==========================================
 const timeAgo = (dateStr: string) => {
   const date = new Date(dateStr);
   const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
@@ -37,6 +253,9 @@ const timeAgo = (dateStr: string) => {
   return `منذ ${Math.floor(months / 12)} سنة`;
 };
 
+// ==========================================
+// Main Comment Section
+// ==========================================
 export default function CommentSection({ seriesId, chapterId }: CommentSectionProps) {
   const { user, isAuthModalOpen, setAuthModalOpen } = useUserStore();
   const [comments, setComments] = useState<CommentData[]>([]);
@@ -57,7 +276,7 @@ export default function CommentSection({ seriesId, chapterId }: CommentSectionPr
       .from("comments")
       .select(`
         *,
-        profiles (username, avatar_url),
+        profiles!comments_user_id_fkey (username, avatar_url),
         comment_votes (user_id, is_upvote)
       `)
       .order("created_at", { ascending: false });
@@ -65,7 +284,10 @@ export default function CommentSection({ seriesId, chapterId }: CommentSectionPr
     if (seriesId) query = query.eq("series_id", seriesId);
     if (chapterId) query = query.eq("chapter_id", chapterId);
 
-    const { data } = await query;
+    const { data, error } = await query;
+    if (error) {
+      console.error("Error fetching comments:", error);
+    }
     if (data) setComments(data as any);
     setLoading(false);
   };
@@ -87,7 +309,7 @@ export default function CommentSection({ seriesId, chapterId }: CommentSectionPr
         parent_id: parentId || null,
         content: content.trim(),
       })
-      .select(`*, profiles(username, avatar_url), comment_votes(user_id, is_upvote)`)
+      .select(`*, profiles!comments_user_id_fkey(username, avatar_url), comment_votes(user_id, is_upvote)`)
       .single();
 
     if (error) {
@@ -97,7 +319,6 @@ export default function CommentSection({ seriesId, chapterId }: CommentSectionPr
     }
 
     if (data) {
-      // Ensure comment_votes is initialized as an empty array for new comments
       const newCommentData = { ...data, comment_votes: data.comment_votes || [] };
       setComments((prev) => [newCommentData as any, ...prev]);
       if (parentId) {
@@ -293,7 +514,10 @@ export default function CommentSection({ seriesId, chapterId }: CommentSectionPr
   };
 
   return (
-    <div className="max-w-4xl mx-auto w-full py-8 mt-12 border-t border-[var(--border-color)]">
+    <div className="max-w-4xl mx-auto w-full py-8 mt-12 border-t border-[var(--border-color)] px-4">
+      {/* Emoji Reactions - Available for everyone */}
+      <ReactionBar seriesId={seriesId} chapterId={chapterId} />
+
       <div className="flex items-center justify-between mb-8">
         <h3 className="text-xl font-bold flex items-center gap-2" style={{ color: "var(--text-primary)" }}>
           <MessageSquare className="w-5 h-5 text-primary-500" />
