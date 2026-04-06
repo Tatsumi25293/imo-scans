@@ -1,5 +1,4 @@
 import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 let _s3Client: S3Client | null = null;
 
@@ -22,19 +21,6 @@ export function getVultrClient(): S3Client {
   });
 
   return _s3Client;
-}
-
-export async function generateVultrPresignedUrl(key: string, contentType: string): Promise<string> {
-  const bucket = process.env.VULTR_BUCKET || "imo-scans";
-  const command = new PutObjectCommand({
-    Bucket: bucket,
-    Key: key,
-    ContentType: contentType,
-    ACL: "public-read",
-  });
-  
-  const client = getVultrClient();
-  return getSignedUrl(client, command, { expiresIn: 3600 });
 }
 
 const BUCKET = process.env.VULTR_BUCKET || "imo-scans";
