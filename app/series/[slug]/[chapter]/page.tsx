@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import ViewTracker from "@/components/view-tracker";
 import CommentSection from "@/components/comments/CommentSection";
+import ScrollToTop from "@/components/ScrollToTop";
 
 interface PageProps {
   params: Promise<{ slug: string; chapter: string }>;
@@ -105,7 +106,8 @@ export default async function ChapterReaderPage({ params }: PageProps) {
       </header>
 
       {/* Reader Content */}
-      <main className="max-w-3xl mx-auto w-full bg-black min-h-screen">
+      <ScrollToTop />
+      <main className="w-full md:max-w-3xl md:mx-auto bg-black min-h-screen">
         {pages && pages.length > 0 ? (
           <div className="flex flex-col w-full justify-center">
             {pages.map((page, i) => (
@@ -134,7 +136,7 @@ export default async function ChapterReaderPage({ params }: PageProps) {
 
       {/* Reader Footer Navigation */}
       <footer
-        className="py-6 mt-8"
+        className="py-6"
         style={{
           background: "var(--header-bg)",
           borderTop: "1px solid var(--border-color)",
