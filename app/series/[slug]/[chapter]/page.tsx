@@ -107,22 +107,23 @@ export default async function ChapterReaderPage({ params }: PageProps) {
 
       {/* Reader Content */}
       <ScrollToTop />
-      <main className="w-full md:max-w-3xl md:mx-auto bg-black min-h-screen">
+      <main className="w-full bg-black min-h-screen p-0 m-0 max-w-none">
         {pages && pages.length > 0 ? (
-          <div className="flex flex-col w-full justify-center">
+          <div className="flex flex-col w-full items-center m-0 p-0">
             {pages.map((page, i) => (
-              <div key={page.id} className="relative w-full">
-                {/* 
-                  Using standard HTML img for manhwa reading is often better for continuous scrolling
-                  without artificial Next.js Image height constraints, but we can also use Next Image 
-                  with layout="responsive" or width/height.
-                */}
+              <div key={page.id} className="w-full m-0 p-0 leading-[0]">
                 <img
                   src={page.image_url}
                   alt={`صفحة ${page.page_number}`}
                   loading={i < 3 ? "eager" : "lazy"}
-                  className="w-full h-auto block m-0 p-0 pointer-events-none"
-                  style={{ display: "block" }}
+                  className="block m-0 p-0 pointer-events-none"
+                  style={{ 
+                    display: "block",
+                    width: "100%",
+                    height: "auto",
+                    maxWidth: "100%",
+                    minWidth: "100%",
+                  }}
                 />
               </div>
             ))}
