@@ -5,8 +5,10 @@ import { SeriesCard } from "@/components/series/SeriesCard";
 import { mockGenres } from "@/lib/mock-data";
 import { formatNumber } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/server";
+import { WebsiteJsonLd, OrganizationJsonLd, BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 
-export const dynamic = "force-dynamic";
+// ISR: يُحدّث كل دقيقة بدل ما يكون ديناميكي كل مرة
+export const revalidate = 60;
 
 export default async function HomePage() {
   const supabase = await createClient();
@@ -44,6 +46,10 @@ export default async function HomePage() {
 
   return (
     <div className="page-transition">
+      {/* SEO: Structured Data */}
+      <WebsiteJsonLd />
+      <OrganizationJsonLd />
+      <BreadcrumbJsonLd items={[{ name: "الرئيسية", href: "/" }]} />
       {/* ============================================= */}
       {/* Hero Section */}
       {/* ============================================= */}

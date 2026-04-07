@@ -4,8 +4,10 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Grid3X3 } from "lucide-react";
 import type { Metadata } from "next";
-
 import { createClient } from "@/lib/supabase/server";
+import { CollectionJsonLd, BreadcrumbJsonLd } from "@/components/seo/JsonLd";
+
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://imo-scans.vercel.app";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -15,9 +17,40 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const genre = mockGenres.find((g) => g.slug === slug);
   if (!genre) return { title: "غير موجود" };
+
+  const title = `مانهوا ${genre.name} مترجمة`;
+  const description = `تصفح أفضل المانهوا والويبتون من تصنيف ${genre.name} مترجمة إلى العربية. اكتشف أحدث الأعمال في قسم ${genre.name} على IMO Scans.`;
+
   return {
-    title: `تصنيف: ${genre.name}`,
-    description: `تصفح مانهوا تصنيف ${genre.name} مترجمة إلى العربية`,
+    title,
+    description,
+    keywords: [
+      genre.name,
+      `مانهوا ${genre.name}`,
+      `ويبتون ${genre.name}`,
+      `مانجا ${genre.name}`,
+      `${genre.name} مترجم`,
+      `تصنيف ${genre.name}`,
+      "مانهوا مترجمة",
+      "imo scans",
+    ],
+    openGraph: {
+      type: "website",
+      title: `${title} | IMO Scans`,
+      description,
+      url: `${BASE_URL}/genres/${slug}`,
+      siteName: "IMO Scans",
+      locale: "ar_AR",
+      images: [{ url: "/logo.png", width: 512, height: 512, alt: `مانهوا ${genre.name}` }],
+    },
+    twitter: {
+      card: "summary",
+      title: `${title} | IMO Scans`,
+      description,
+    },
+    alternates: {
+      canonical: `${BASE_URL}/genres/${slug}`,
+    },
   };
 }
 
@@ -48,6 +81,20 @@ export default async function GenrePage({ params }: PageProps) {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 page-transition">
+      {/* SEO: Structured Data */}
+      <CollectionJsonLd
+        name={`مانهوا ${genre.name}`}
+        description={`جميع المانهوا والويبتون في تصنيف ${genre.name} مترجمة إلى العربية`}
+        url={`/genres/${slug}`}
+        numberOfItems={seriesList.length}
+      />
+      <BreadcrumbJsonLd
+        items={[
+          { name: "الرئيسية", href: "/" },
+          { name: "التصنيفات", href: "/series" },
+          { name: genre.name, href: `/genres/${slug}` },
+        ]}
+      />
       {/* Header */}
       <div className="flex items-center gap-3 mb-2">
         <div className="p-2 rounded-lg bg-gradient-to-br from-primary-500/20 to-primary-600/20">

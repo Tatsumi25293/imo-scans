@@ -7,6 +7,9 @@ import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import ViewTracker from "@/components/view-tracker";
 import CommentSection from "@/components/comments/CommentSection";
+import { SeriesJsonLd, BreadcrumbJsonLd } from "@/components/seo/JsonLd";
+
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://imo-scans.vercel.app";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -15,12 +18,59 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const supabase = await createClient();
-  const { data: series } = await supabase.from("series").select("title, description").eq("slug", slug).single();
+  const { data: series } = await supabase
+    .from("series")
+    .select("title, description, cover_image_url, author, artist, type, status, rating")
+    .eq("slug", slug)
+    .single();
 
   if (!series) return { title: "غير موجود" };
+
+  const title = series.title;
+  const description = series.description || `اقرأ ${title} مترجمة إلى العربية على IMO Scans. تحديثات مستمرة وجودة ترجمة عالية.`;
+  const typeLabel = series.type === "manhwa" ? "مانهوا" : series.type === "manga" ? "مانجا" : "مانها";
+
   return {
-    title: series.title,
-    description: series.description || `اقرأ ${series.title} مترجمة إلى العربية`,
+    title: `${title} - اقرأ ${typeLabel} مترجمة`,
+    description: description.slice(0, 160),
+    keywords: [
+      title,
+      `${title} مترجمة`,
+      `${title} عربي`,
+      `قراءة ${title}`,
+      typeLabel,
+      `${typeLabel} ${series.status === "ongoing" ? "مستمرة" : "مكتملة"}`,
+      series.author || "",
+      "مانهوا مترجمة",
+      "imo scans",
+    ].filter(Boolean),
+    openGraph: {
+      type: "article",
+      title: `${title} - ${typeLabel} مترجمة | IMO Scans`,
+      description,
+      url: `${BASE_URL}/series/${slug}`,
+      siteName: "IMO Scans",
+      images: series.cover_image_url
+        ? [
+            {
+              url: series.cover_image_url,
+              width: 400,
+              height: 560,
+              alt: title,
+            },
+          ]
+        : [],
+      locale: "ar_AR",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} | IMO Scans`,
+      description: description.slice(0, 200),
+      images: series.cover_image_url ? [series.cover_image_url] : [],
+    },
+    alternates: {
+      canonical: `${BASE_URL}/series/${slug}`,
+    },
   };
 }
 
@@ -52,6 +102,29 @@ export default async function SeriesDetailPage({ params }: PageProps) {
   return (
     <div className="page-transition">
       <ViewTracker type="series" id={series.id} />
+      {/* SEO: Structured Data */}
+      <SeriesJsonLd
+        title={formattedSeries.title}
+        slug={formattedSeries.slug}
+        description={formattedSeries.description}
+        author={formattedSeries.author}
+        artist={formattedSeries.artist}
+        coverImage={formattedSeries.cover_image_url}
+        rating={formattedSeries.rating}
+        status={formattedSeries.status}
+        type={formattedSeries.type}
+        genres={formattedSeries.genres}
+        chaptersCount={chaptersCount}
+        datePublished={formattedSeries.published_at}
+        dateModified={formattedSeries.updated_at}
+      />
+      <BreadcrumbJsonLd
+        items={[
+          { name: "الرئيسية", href: "/" },
+          { name: "الأعمال", href: "/series" },
+          { name: formattedSeries.title, href: `/series/${formattedSeries.slug}` },
+        ]}
+      />
       {/* Hero Banner */}
       <div className="relative h-[280px] lg:h-[350px]">
         <Image

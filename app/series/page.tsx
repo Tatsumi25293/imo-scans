@@ -3,13 +3,37 @@ import { mockGenres } from "@/lib/mock-data";
 import Link from "next/link";
 import { BookOpen } from "lucide-react";
 import type { Metadata } from "next";
+import { createClient } from "@/lib/supabase/server";
+import { CollectionJsonLd, BreadcrumbJsonLd } from "@/components/seo/JsonLd";
+
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://imo-scans.vercel.app";
 
 export const metadata: Metadata = {
-  title: "جميع المانهوا",
-  description: "تصفح جميع المانهوا والويبتون المتاحة مترجمة إلى العربية",
+  title: "جميع المانهوا والويبتون المترجمة",
+  description: "تصفح مكتبتنا الكاملة من المانهوا والويبتون والمانجا المترجمة إلى العربية. أكشن، رومانسي، خيال، مغامرات والمزيد. تحديثات يومية على IMO Scans.",
+  keywords: [
+    "جميع المانهوا", "مانهوا مترجمة", "ويبتون مترجم",
+    "مكتبة مانهوا", "قائمة مانجا", "مانهوا عربي",
+    "imo scans",
+  ],
+  openGraph: {
+    type: "website",
+    title: "جميع المانهوا والويبتون | IMO Scans",
+    description: "تصفح مكتبتنا الكاملة من المانهوا والويبتون المترجمة إلى العربية.",
+    url: `${BASE_URL}/series`,
+    siteName: "IMO Scans",
+    locale: "ar_AR",
+    images: [{ url: "/logo.png", width: 512, height: 512, alt: "IMO Scans" }],
+  },
+  twitter: {
+    card: "summary",
+    title: "جميع المانهوا | IMO Scans",
+    description: "تصفح مكتبتنا الكاملة من المانهوا والويبتون المترجمة إلى العربية.",
+  },
+  alternates: {
+    canonical: `${BASE_URL}/series`,
+  },
 };
-
-import { createClient } from "@/lib/supabase/server";
 
 export default async function SeriesListPage() {
   const supabase = await createClient();
@@ -26,6 +50,19 @@ export default async function SeriesListPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 page-transition">
+      {/* SEO: Structured Data */}
+      <CollectionJsonLd
+        name="جميع المانهوا والويبتون"
+        description="مكتبة كاملة من المانهوا والويبتون المترجمة إلى العربية"
+        url="/series"
+        numberOfItems={seriesList.length}
+      />
+      <BreadcrumbJsonLd
+        items={[
+          { name: "الرئيسية", href: "/" },
+          { name: "جميع الأعمال", href: "/series" },
+        ]}
+      />
       {/* Header */}
       <div className="flex items-center gap-3 mb-2">
         <div className="p-2 rounded-lg bg-gradient-to-br from-primary-500/20 to-primary-600/20">

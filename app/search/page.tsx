@@ -1,11 +1,40 @@
 import { createClient } from "@/lib/supabase/server";
 import { SeriesCard } from "@/components/series/SeriesCard";
 import { Search } from "lucide-react";
+import type { Metadata } from "next";
+
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://imo-scans.vercel.app";
 
 export const dynamic = "force-dynamic";
 
 interface SearchPageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export async function generateMetadata({ searchParams }: SearchPageProps): Promise<Metadata> {
+  const resolved = await searchParams;
+  const q = resolved.q as string;
+
+  if (!q) {
+    return {
+      title: "البحث في المانهوا",
+      description: "ابحث عن أفضل المانهوا والويبتون المترجمة إلى العربية على IMO Scans.",
+      robots: { index: false, follow: true },
+    };
+  }
+
+  return {
+    title: `نتائج البحث: ${q}`,
+    description: `نتائج البحث عن "${q}" - اعثر على المانهوا والويبتون المترجمة على IMO Scans.`,
+    openGraph: {
+      title: `البحث عن: ${q} | IMO Scans`,
+      description: `نتائج البحث عن "${q}" في مكتبة المانهوا والويبتون المترجمة.`,
+      url: `${BASE_URL}/search?q=${encodeURIComponent(q)}`,
+      siteName: "IMO Scans",
+      locale: "ar_AR",
+    },
+    robots: { index: false, follow: true },
+  };
 }
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {

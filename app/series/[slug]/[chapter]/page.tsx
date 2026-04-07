@@ -6,6 +6,9 @@ import { createClient } from "@/lib/supabase/server";
 import ViewTracker from "@/components/view-tracker";
 import CommentSection from "@/components/comments/CommentSection";
 import ScrollToTop from "@/components/ScrollToTop";
+import { ChapterJsonLd, BreadcrumbJsonLd } from "@/components/seo/JsonLd";
+
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://imo-scans.vercel.app";
 
 interface PageProps {
   params: Promise<{ slug: string; chapter: string }>;
@@ -14,10 +17,51 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug, chapter } = await params;
   const supabase = await createClient();
-  const { data: series } = await supabase.from("series").select("title").eq("slug", slug).single();
+  const { data: series } = await supabase
+    .from("series")
+    .select("title, cover_image_url, type")
+    .eq("slug", slug)
+    .single();
+
+  const title = `الفصل ${chapter} - ${series?.title || "غير معروف"}`;
+  const typeLabel = series?.type === "manhwa" ? "مانهوا" : series?.type === "manga" ? "مانجا" : "مانها";
+  const description = `اقرأ الفصل ${chapter} من ${typeLabel} ${series?.title || ""} مترجم إلى العربية على IMO Scans. جودة عالية وتحديثات مستمرة.`;
 
   return {
-    title: `الفصل ${chapter} | ${series?.title || "غير معروف"}`,
+    title,
+    description,
+    keywords: [
+      series?.title || "",
+      `الفصل ${chapter}`,
+      `${series?.title} الفصل ${chapter}`,
+      typeLabel,
+      "مانهوا مترجمة",
+      "فصل جديد",
+    ].filter(Boolean),
+    openGraph: {
+      type: "article",
+      title: `${title} | IMO Scans`,
+      description,
+      url: `${BASE_URL}/series/${slug}/${chapter}`,
+      siteName: "IMO Scans",
+      images: series?.cover_image_url
+        ? [{ url: series.cover_image_url, width: 400, height: 560, alt: series.title }]
+        : [],
+      locale: "ar_AR",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} | IMO Scans`,
+      description,
+      images: series?.cover_image_url ? [series.cover_image_url] : [],
+    },
+    alternates: {
+      canonical: `${BASE_URL}/series/${slug}/${chapter}`,
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
   };
 }
 
@@ -30,7 +74,7 @@ export default async function ChapterReaderPage({ params }: PageProps) {
   // Get series details
   const { data: series } = await supabase
     .from("series")
-    .select("id, title, slug, chapters(id, chapter_number)")
+    .select("id, title, slug, chapters(id, chapter_number, published_at, created_at)")
     .eq("slug", slug)
     .single();
 
@@ -119,6 +163,21 @@ export default async function ChapterReaderPage({ params }: PageProps) {
 
       <div className="chapter-reader-root" style={{ background: "#000", minHeight: "100vh" }}>
         <ViewTracker type="chapter" id={currentChapter.id} />
+        {/* SEO: Structured Data */}
+        <ChapterJsonLd
+          seriesTitle={series.title}
+          seriesSlug={series.slug}
+          chapterNumber={chapterNumber}
+          totalPages={pages?.length || 0}
+          datePublished={currentChapter.published_at || currentChapter.created_at}
+        />
+        <BreadcrumbJsonLd
+          items={[
+            { name: "الرئيسية", href: "/" },
+            { name: series.title, href: `/series/${series.slug}` },
+            { name: `الفصل ${chapterNumber}`, href: `/series/${series.slug}/${chapterNumber}` },
+          ]}
+        />
         
         {/* Reader Header */}
         <header
