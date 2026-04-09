@@ -138,7 +138,7 @@ export default async function ChapterReaderPage({ params }: PageProps) {
           display: block !important;
           width: 100% !important;
           height: auto !important;
-          max-width: 100% !important;
+          max-width: 800px !important;
           margin: 0 auto !important;
           padding: 0 !important;
           border: none !important;
@@ -146,8 +146,8 @@ export default async function ChapterReaderPage({ params }: PageProps) {
         }
         .chapter-images-container {
           width: 100% !important;
-          max-width: 100% !important;
-          margin: 0 !important;
+          max-width: 800px !important;
+          margin: 0 auto !important;
           padding: 0 !important;
           font-size: 0;
           line-height: 0;
