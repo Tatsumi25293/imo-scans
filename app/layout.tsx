@@ -49,6 +49,21 @@ export const metadata: Metadata = {
   authors: [{ name: "IMO Scans", url: BASE_URL }],
   creator: "IMO Scans",
   publisher: "IMO Scans",
+  icons: {
+    icon: [
+      { url: "/icon.png", sizes: "32x32", type: "image/png" },
+      { url: "/icon.png", sizes: "16x16", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+    other: [
+      {
+        rel: "icon",
+        url: "/favicon.ico",
+      },
+    ],
+  },
   robots: {
     index: true,
     follow: true,
@@ -70,7 +85,7 @@ export const metadata: Metadata = {
       "اقرأ أفضل المانهوا والويبتون مترجمة إلى العربية مجاناً. تحديثات يومية وترجمة احترافية عالية الجودة.",
     images: [
       {
-        url: "/logo.png",
+        url: "/icon.png",
         width: 512,
         height: 512,
         alt: "IMO Scans - مانهوا عربي",
@@ -82,7 +97,7 @@ export const metadata: Metadata = {
     title: "IMO Scans - اقرأ مانهوا وويبتون مترجمة عربي",
     description:
       "اقرأ أفضل المانهوا والويبتون مترجمة إلى العربية مجاناً. تحديثات يومية وترجمة احترافية.",
-    images: ["/logo.png"],
+    images: ["/icon.png"],
   },
   alternates: {
     canonical: BASE_URL,
