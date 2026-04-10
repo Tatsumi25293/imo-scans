@@ -16,7 +16,7 @@ function DiscordIcon({ className }: { className?: string }) {
   );
 }
 
-const DISCORD_URL = "https://discord.gg/gtvxDXmvsG";
+const DISCORD_URL = "https://discord.gg/2kMvWFnyuT";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
