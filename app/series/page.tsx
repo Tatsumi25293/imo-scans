@@ -40,7 +40,7 @@ export async function generateMetadata({
       url: `${BASE_URL}/series${typeFilter ? `?type=${typeFilter}` : ""}`,
       siteName: "IMO Scans",
       locale: "ar_AR",
-      images: [{ url: "/logo.png", width: 512, height: 512, alt: "IMO Scans" }],
+      images: [{ url: "/logo-v2.png", width: 512, height: 512, alt: "IMO Scans" }],
     },
     twitter: {
       card: "summary",

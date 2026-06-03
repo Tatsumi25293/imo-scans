@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       url: `${BASE_URL}/genres/${slug}`,
       siteName: "IMO Scans",
       locale: "ar_AR",
-      images: [{ url: "/logo.png", width: 512, height: 512, alt: `أعمال ${genre.name}` }],
+      images: [{ url: "/logo-v2.png", width: 512, height: 512, alt: `أعمال ${genre.name}` }],
     },
     twitter: {
       card: "summary",

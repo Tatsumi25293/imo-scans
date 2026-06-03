@@ -42,7 +42,7 @@ export function OrganizationJsonLd() {
     name: "IMO Scans",
     alternateName: "ايمو سكانز",
     url: BASE_URL,
-    logo: `${BASE_URL}/logo.png`,
+    logo: `${BASE_URL}/logo-v2.png`,
     description:
       "فريق ترجمة مانجا ومانهوا عربي. نقدم أفضل الترجمات العربية بجودة عالية وتحديثات يومية.",
     sameAs: [],

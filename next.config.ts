@@ -36,7 +36,7 @@ const nextConfig: NextConfig = {
       },
       {
         // Cache static assets aggressively
-        source: "/logo.png",
+        source: "/logo-v2.png",
         headers: [
           {
             key: "Cache-Control",
