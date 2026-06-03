@@ -15,7 +15,7 @@ import {
   X,
 } from "lucide-react";
 
-const ADMIN_PASSWORD = "imoscans2024";
+const ADMIN_PASSWORD = "typeMoon2026@";
 
 const sidebarLinks = [
   { href: "/admin", label: "لوحة التحكم", icon: LayoutDashboard },
