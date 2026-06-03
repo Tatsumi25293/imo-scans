@@ -111,7 +111,7 @@ export function Header() {
             <div className="flex items-center gap-6">
               {/* Logo */}
               <Link href="/" className="flex-shrink-0 flex items-center gap-2 group transition-transform hover:scale-105">
-                <div className="relative w-10 h-10 md:w-12 md:h-12 overflow-hidden rounded-lg">
+                <div className="relative w-14 h-14 md:w-16 md:h-16">
                    <Image src="/logo-v2.png" alt="IMO Scans Logo" fill className="object-contain" priority />
                 </div>
                 <span className="text-xl font-black tracking-tight hidden lg:block" style={{ color: "var(--text-primary)" }}>
