@@ -12,7 +12,7 @@ export function WebsiteJsonLd() {
     alternateName: "ايمو سكانز",
     url: BASE_URL,
     description:
-      "اقرأ أفضل المانهوا والويبتون مترجمة إلى العربية. تحديثات يومية وترجمة احترافية عالية الجودة.",
+      "اقرأ أفضل المانجا والمانهوا مترجمة إلى العربية. تحديثات يومية وترجمة احترافية عالية الجودة.",
     inLanguage: "ar",
     potentialAction: {
       "@type": "SearchAction",
@@ -44,7 +44,7 @@ export function OrganizationJsonLd() {
     url: BASE_URL,
     logo: `${BASE_URL}/logo.png`,
     description:
-      "فريق ترجمة مانهوا وويبتون عربي. نقدم أفضل الترجمات العربية بجودة عالية وتحديثات يومية.",
+      "فريق ترجمة مانجا ومانهوا عربي. نقدم أفضل الترجمات العربية بجودة عالية وتحديثات يومية.",
     sameAs: [],
   };
 

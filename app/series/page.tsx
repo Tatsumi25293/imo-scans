@@ -8,39 +8,70 @@ import { CollectionJsonLd, BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://imo-scans.vercel.app";
 
-export const metadata: Metadata = {
-  title: "جميع المانهوا والويبتون المترجمة",
-  description: "تصفح مكتبتنا الكاملة من المانهوا والويبتون والمانجا المترجمة إلى العربية. أكشن، رومانسي، خيال، مغامرات والمزيد. تحديثات يومية على IMO Scans.",
-  keywords: [
-    "جميع المانهوا", "مانهوا مترجمة", "ويبتون مترجم",
-    "مكتبة مانهوا", "قائمة مانجا", "مانهوا عربي",
-    "imo scans",
-  ],
-  openGraph: {
-    type: "website",
-    title: "جميع المانهوا والويبتون | IMO Scans",
-    description: "تصفح مكتبتنا الكاملة من المانهوا والويبتون المترجمة إلى العربية.",
-    url: `${BASE_URL}/series`,
-    siteName: "IMO Scans",
-    locale: "ar_AR",
-    images: [{ url: "/logo.png", width: 512, height: 512, alt: "IMO Scans" }],
-  },
-  twitter: {
-    card: "summary",
-    title: "جميع المانهوا | IMO Scans",
-    description: "تصفح مكتبتنا الكاملة من المانهوا والويبتون المترجمة إلى العربية.",
-  },
-  alternates: {
-    canonical: `${BASE_URL}/series`,
-  },
-};
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{ type?: string }>;
+}): Promise<Metadata> {
+  const resolvedSearchParams = await searchParams;
+  const typeFilter = resolvedSearchParams.type;
 
-export default async function SeriesListPage() {
+  let title = "جميع المانجا والمانهوا المترجمة | IMO Scans";
+  let description = "تصفح مكتبتنا الكاملة من المانجا والمانهوا والويبتون المترجمة إلى العربية بجودة عالية.";
+
+  if (typeFilter === "manga") {
+    title = "جميع المانجا المترجمة | IMO Scans";
+    description = "تصفح مكتبتنا الكاملة من المانجا اليابانية المترجمة إلى العربية بجودة عالية.";
+  } else if (typeFilter === "manhwa") {
+    title = "جميع المانهوا المترجمة | IMO Scans";
+    description = "تصفح مكتبتنا الكاملة من المانهوا الكورية المترجمة إلى العربية بجودة عالية.";
+  } else if (typeFilter === "manhua") {
+    title = "جميع المانها المترجمة | IMO Scans";
+    description = "تصفح مكتبتنا الكاملة من المانها الصينية المترجمة إلى العربية بجودة عالية.";
+  }
+
+  return {
+    title,
+    description,
+    openGraph: {
+      type: "website",
+      title,
+      description,
+      url: `${BASE_URL}/series${typeFilter ? `?type=${typeFilter}` : ""}`,
+      siteName: "IMO Scans",
+      locale: "ar_AR",
+      images: [{ url: "/logo.png", width: 512, height: 512, alt: "IMO Scans" }],
+    },
+    twitter: {
+      card: "summary",
+      title,
+      description,
+    },
+    alternates: {
+      canonical: `${BASE_URL}/series${typeFilter ? `?type=${typeFilter}` : ""}`,
+    },
+  };
+}
+
+export default async function SeriesListPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ type?: string }>;
+}) {
+  const resolvedSearchParams = await searchParams;
+  const typeFilter = resolvedSearchParams.type as string | undefined;
+
   const supabase = await createClient();
-  const { data: dbSeries } = await supabase
+  
+  let query = supabase
     .from("series")
-    .select(`*, genres:series_genres(genre:genres(*)), chapters(count)`)
-    .order("created_at", { ascending: false });
+    .select(`*, genres:series_genres(genre:genres(*)), chapters(count)`);
+
+  if (typeFilter === "manga" || typeFilter === "manhwa" || typeFilter === "manhua") {
+    query = query.eq("type", typeFilter);
+  }
+
+  const { data: dbSeries } = await query.order("created_at", { ascending: false });
 
   const seriesList = dbSeries?.map(s => ({
     ...s,
@@ -48,19 +79,34 @@ export default async function SeriesListPage() {
     chapters_count: s.chapters?.[0]?.count || 0
   })) || [];
 
+  let pageTitle = "جميع الأعمال";
+  let pageDesc = "تصفح مكتبتنا الكاملة من الأعمال المترجمة";
+
+  if (typeFilter === "manga") {
+    pageTitle = "جميع المانجا";
+    pageDesc = "تصفح مكتبتنا الكاملة من المانجا اليابانية المترجمة";
+  } else if (typeFilter === "manhwa") {
+    pageTitle = "جميع المانهوا";
+    pageDesc = "تصفح مكتبتنا الكاملة من المانهوا الكورية المترجمة";
+  } else if (typeFilter === "manhua") {
+    pageTitle = "جميع المانها";
+    pageDesc = "تصفح مكتبتنا الكاملة من المانها الصينية المترجمة";
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 page-transition">
       {/* SEO: Structured Data */}
       <CollectionJsonLd
-        name="جميع المانهوا والويبتون"
-        description="مكتبة كاملة من المانهوا والويبتون المترجمة إلى العربية"
-        url="/series"
+        name={pageTitle}
+        description={pageDesc}
+        url={typeFilter ? `/series?type=${typeFilter}` : "/series"}
         numberOfItems={seriesList.length}
       />
       <BreadcrumbJsonLd
         items={[
           { name: "الرئيسية", href: "/" },
           { name: "جميع الأعمال", href: "/series" },
+          ...(typeFilter ? [{ name: pageTitle, href: `/series?type=${typeFilter}` }] : []),
         ]}
       />
       {/* Header */}
@@ -69,18 +115,31 @@ export default async function SeriesListPage() {
           <BookOpen className="w-5 h-5 text-primary-400" />
         </div>
         <h1 className="text-2xl sm:text-3xl font-bold" style={{ color: "var(--text-primary)" }}>
-          جميع المانهوا
+          {pageTitle}
         </h1>
       </div>
       <p className="text-sm mb-8" style={{ color: "var(--text-secondary)" }}>
-        تصفح مكتبتنا الكاملة من المانهوا والويبتون المترجمة
+        {pageDesc}
       </p>
 
       {/* Genre Filter */}
       <div className="flex gap-2 overflow-x-auto no-scrollbar pb-4 mb-6">
         <Link
           href="/series"
-          className="px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap flex-shrink-0 bg-gradient-to-r from-primary-500 to-primary-600 text-white"
+          className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap flex-shrink-0 transition-colors ${
+            !typeFilter
+              ? "bg-gradient-to-r from-primary-500 to-primary-600 text-white"
+              : ""
+          }`}
+          style={
+            typeFilter
+              ? {
+                  background: "var(--bg-tertiary)",
+                  color: "var(--text-secondary)",
+                  border: "1px solid var(--border-color)",
+                }
+              : undefined
+          }
         >
           الكل
         </Link>

@@ -22,7 +22,7 @@ export function Footer() {
               <span className="text-xl font-bold text-gradient">IMO Scans</span>
             </Link>
             <p className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>
-              وجهتك الأولى لقراءة أفضل المانهوا والويبتون مترجمة إلى العربية بجودة عالية.
+              وجهتك الأولى لقراءة أفضل المانجا والمانهوا والويبتون مترجمة إلى العربية بجودة عالية.
             </p>
           </div>
 
@@ -34,7 +34,7 @@ export function Footer() {
             <ul className="space-y-2">
               {[
                 { href: "/", label: "الرئيسية" },
-                { href: "/series", label: "جميع المانهوا" },
+                { href: "/series", label: "جميع الأعمال" },
               ].map((link) => (
                 <li key={link.href}>
                   <Link
@@ -75,7 +75,7 @@ export function Footer() {
               عن الموقع
             </h3>
             <p className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>
-              نقدم أفضل الترجمات العربية للمانهوا الكورية والمانها الصينية بتحديثات يومية مستمرة.
+              نقدم أفضل الترجمات العربية للمانجا والمانهوا والويبتون بتحديثات مستمرة.
             </p>
           </div>
         </div>
@@ -87,6 +87,9 @@ export function Footer() {
         >
           <p className="text-sm" style={{ color: "var(--text-muted)" }}>
             © 2024 IMO Scans. جميع الحقوق محفوظة.
+          </p>
+          <p className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+            اللهم صل وسلم على نبينا محمد
           </p>
           <p className="text-sm flex items-center gap-1" style={{ color: "var(--text-muted)" }}>
             صُنع بـ <Heart className="w-4 h-4 text-accent-500 fill-accent-500" /> للمجتمع العربي

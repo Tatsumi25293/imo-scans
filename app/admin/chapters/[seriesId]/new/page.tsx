@@ -148,7 +148,7 @@ export default function NewChapterPage({
 
     if (error) {
       if (error.code === "23505")
-        throw new Error("رقم الفصل هذا موجود مسبقاً لهذه المانهوا.");
+        throw new Error("رقم الفصل هذا موجود مسبقاً لهذا العمل.");
       throw new Error("فشل إنشاء الفصل: " + error.message);
     }
     return data;
@@ -380,7 +380,7 @@ export default function NewChapterPage({
             إضافة فصل جديد
           </h1>
           <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
-            المانهوا:{" "}
+            العمل:{" "}
             <strong className="text-primary-400">{series?.title}</strong>
           </p>
         </div>
@@ -415,7 +415,7 @@ export default function NewChapterPage({
               تم الرفع بنجاح!
             </h2>
             <p className="text-sm" style={{ color: "var(--text-muted)" }}>
-              جاري التحويل إلى قائمة المانهوا...
+              جاري التحويل إلى قائمة الأعمال...
             </p>
           </div>
         </div>

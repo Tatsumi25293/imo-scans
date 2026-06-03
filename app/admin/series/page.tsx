@@ -36,7 +36,7 @@ export default function AdminSeriesPage() {
   };
 
   const handleDelete = async (id: string, title: string) => {
-    if (!confirm(`هل أنت متأكد من حذف المانهوا "${title}" وجميع فصولها؟`)) return;
+    if (!confirm(`هل أنت متأكد من حذف العمل "${title}" وجميع فصوله؟`)) return;
     try {
       const { error } = await supabase.from("series").delete().eq("id", id);
       if (error) throw error;
@@ -52,10 +52,10 @@ export default function AdminSeriesPage() {
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <div>
           <h1 className="text-2xl font-bold" style={{ color: "var(--text-primary)" }}>
-            إدارة المانهوا
+            إدارة الأعمال
           </h1>
           <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
-            {series.length} مانهوا في قاعدة البيانات الحقيقية
+            {series.length} عمل في قاعدة البيانات الحقيقية
           </p>
         </div>
         <Link
@@ -63,7 +63,7 @@ export default function AdminSeriesPage() {
           className="btn-primary"
         >
           <Plus className="w-5 h-5" />
-          إضافة مانهوا
+          إضافة عمل جديد
         </Link>
       </div>
 
@@ -77,8 +77,8 @@ export default function AdminSeriesPage() {
           </div>
         ) : series.length === 0 ? (
           <div className="text-center p-12">
-            <p className="text-lg font-medium mb-2" style={{ color: "var(--text-primary)" }}>لا توجد مانهوا حالياً</p>
-            <p className="text-sm" style={{ color: "var(--text-secondary)" }}>ابدأ بإضافة مانهوا جديدة لتظهر هنا.</p>
+            <p className="text-lg font-medium mb-2" style={{ color: "var(--text-primary)" }}>لا توجد أعمال حالياً</p>
+            <p className="text-sm" style={{ color: "var(--text-secondary)" }}>ابدأ بإضافة عمل جديد ليظهر هنا.</p>
           </div>
         ) : (
           <>
@@ -87,7 +87,7 @@ export default function AdminSeriesPage() {
               <table className="w-full">
                 <thead>
                   <tr style={{ borderBottom: "1px solid var(--border-color)" }}>
-                    <th className="text-right text-xs font-semibold px-5 py-3.5" style={{ color: "var(--text-muted)" }}>المانهوا</th>
+                    <th className="text-right text-xs font-semibold px-5 py-3.5" style={{ color: "var(--text-muted)" }}>العمل</th>
                     <th className="text-right text-xs font-semibold px-5 py-3.5" style={{ color: "var(--text-muted)" }}>الحالة</th>
                     <th className="text-right text-xs font-semibold px-5 py-3.5" style={{ color: "var(--text-muted)" }}>الفصول</th>
                     <th className="text-right text-xs font-semibold px-5 py-3.5" style={{ color: "var(--text-muted)" }}>المشاهدات</th>

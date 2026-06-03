@@ -18,14 +18,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const genre = mockGenres.find((g) => g.slug === slug);
   if (!genre) return { title: "غير موجود" };
 
-  const title = `مانهوا ${genre.name} مترجمة`;
-  const description = `تصفح أفضل المانهوا والويبتون من تصنيف ${genre.name} مترجمة إلى العربية. اكتشف أحدث الأعمال في قسم ${genre.name} على IMO Scans.`;
+  const title = `أعمال تصنيف ${genre.name} مترجمة`;
+  const description = `تصفح أفضل المانجا والمانهوا والويبتون من تصنيف ${genre.name} مترجمة إلى العربية. اكتشف أحدث الأعمال في قسم ${genre.name} على IMO Scans.`;
 
   return {
     title,
     description,
     keywords: [
       genre.name,
+      `أعمال ${genre.name}`,
       `مانهوا ${genre.name}`,
       `ويبتون ${genre.name}`,
       `مانجا ${genre.name}`,
@@ -41,7 +42,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       url: `${BASE_URL}/genres/${slug}`,
       siteName: "IMO Scans",
       locale: "ar_AR",
-      images: [{ url: "/logo.png", width: 512, height: 512, alt: `مانهوا ${genre.name}` }],
+      images: [{ url: "/logo.png", width: 512, height: 512, alt: `أعمال ${genre.name}` }],
     },
     twitter: {
       card: "summary",
@@ -83,8 +84,8 @@ export default async function GenrePage({ params }: PageProps) {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 page-transition">
       {/* SEO: Structured Data */}
       <CollectionJsonLd
-        name={`مانهوا ${genre.name}`}
-        description={`جميع المانهوا والويبتون في تصنيف ${genre.name} مترجمة إلى العربية`}
+        name={`أعمال ${genre.name}`}
+        description={`جميع الأعمال والمانجا والمانهوا في تصنيف ${genre.name} مترجمة إلى العربية`}
         url={`/genres/${slug}`}
         numberOfItems={seriesList.length}
       />
@@ -105,7 +106,7 @@ export default async function GenrePage({ params }: PageProps) {
         </h1>
       </div>
       <p className="text-sm mb-8" style={{ color: "var(--text-secondary)" }}>
-        جميع المانهوا في تصنيف {genre.name}
+        جميع الأعمال في تصنيف {genre.name}
       </p>
 
       {/* Genre Tabs */}
@@ -146,7 +147,7 @@ export default async function GenrePage({ params }: PageProps) {
       ) : (
         <div className="text-center py-20">
           <p className="text-lg" style={{ color: "var(--text-muted)" }}>
-            لا توجد مانهوا في هذا التصنيف حالياً
+            لا توجد أعمال في هذا التصنيف حالياً
           </p>
         </div>
       )}

@@ -13,6 +13,7 @@ export interface Series {
   description: string | null;
   author: string | null;
   artist: string | null;
+  staff: string | null;
   cover_image_url: string | null;
   banner_image_url: string | null;
   status: "ongoing" | "completed" | "hiatus";

@@ -30,7 +30,7 @@ export default async function AdminDashboard() {
 
   const stats = [
     {
-      label: "إجمالي المانهوا",
+      label: "إجمالي الأعمال",
       value: totalSeries,
       icon: BookOpen,
       color: "from-primary-500 to-primary-600",
@@ -51,7 +51,7 @@ export default async function AdminDashboard() {
       bgColor: "from-amber-500/20 to-amber-600/20",
     },
     {
-      label: "المانهوا المميزة",
+      label: "الأعمال المميزة",
       value: featured,
       icon: TrendingUp,
       color: "from-accent-500 to-accent-600",
@@ -105,7 +105,7 @@ export default async function AdminDashboard() {
       >
         <div className="p-5 flex items-center justify-between" style={{ borderBottom: "1px solid var(--border-color)" }}>
           <h2 className="font-bold" style={{ color: "var(--text-primary)" }}>
-            آخر المانهوا المضافة
+            آخر الأعمال المضافة
           </h2>
           <Link href="/admin/series" className="text-sm text-primary-400 hover:text-primary-300 transition-colors">
             عرض الكل
@@ -166,7 +166,7 @@ export default async function AdminDashboard() {
           </div>
           <div className="min-w-0">
             <p className="font-bold text-sm" style={{ color: "var(--text-primary)" }}>
-              إضافة مانهوا
+              إضافة عمل
             </p>
             <p className="text-xs" style={{ color: "var(--text-muted)" }}>
               مع صورة الغلاف والتفاصيل
@@ -200,7 +200,7 @@ export default async function AdminDashboard() {
           </div>
           <div className="min-w-0">
             <p className="font-bold text-sm" style={{ color: "var(--text-primary)" }}>
-              إدارة المانهوا
+              إدارة الأعمال
             </p>
             <p className="text-xs" style={{ color: "var(--text-muted)" }}>
               تعديل وحذف الأعمال

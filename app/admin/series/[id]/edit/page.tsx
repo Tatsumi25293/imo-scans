@@ -40,6 +40,7 @@ export default function EditSeriesPage() {
     description: "",
     author: "",
     artist: "",
+    staff: "",
     status: "ongoing",
     type: "manhwa",
   });
@@ -64,6 +65,7 @@ export default function EditSeriesPage() {
             description: data.description || "",
             author: data.author || "",
             artist: data.artist || "",
+            staff: data.staff || "",
             status: data.status || "ongoing",
             type: data.type || "manhwa",
           });
@@ -77,7 +79,7 @@ export default function EditSeriesPage() {
         }
       } catch (err: any) {
         console.error(err);
-        setErrorMsg("حدث خطأ أثناء تحميل بيانات المانهوا");
+        setErrorMsg("حدث خطأ أثناء تحميل بيانات العمل");
       } finally {
         setIsLoading(false);
       }
@@ -171,6 +173,7 @@ export default function EditSeriesPage() {
           description: formData.description,
           author: formData.author,
           artist: formData.artist,
+          staff: formData.staff,
           status: formData.status,
           type: formData.type,
           cover_image_url,
@@ -180,7 +183,7 @@ export default function EditSeriesPage() {
         .single();
 
       if (seriesError)
-        throw new Error("فشل تعديل المانهوا: " + seriesError.message);
+        throw new Error("فشل تعديل العمل: " + seriesError.message);
 
       // 3. Update Genres
       await supabase.from("series_genres").delete().eq("series_id", seriesId);
@@ -229,7 +232,7 @@ export default function EditSeriesPage() {
             <CheckCircle2 className="w-10 h-10 text-emerald-400" />
           </div>
           <h2 className="text-xl font-bold mb-2" style={{ color: "var(--text-primary)" }}>تم التعديل بنجاح!</h2>
-          <p className="text-sm" style={{ color: "var(--text-muted)" }}>جاري التحويل إلى قائمة المانهوا...</p>
+          <p className="text-sm" style={{ color: "var(--text-muted)" }}>جاري التحويل إلى قائمة الأعمال...</p>
         </div>
       </div>
     );
@@ -256,10 +259,10 @@ export default function EditSeriesPage() {
         </Link>
         <div>
           <h1 className="text-2xl font-bold" style={{ color: "var(--text-primary)" }}>
-            تعديل مانهوا
+            تعديل العمل
           </h1>
           <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
-            قم بتحديث بيانات المانهوا
+            قم بتحديث بيانات العمل
           </p>
         </div>
       </div>
@@ -363,7 +366,7 @@ export default function EditSeriesPage() {
 
           <div>
             <label className="text-sm mb-1.5 block" style={{ color: "var(--text-secondary)" }}>
-              عنوان المانهوا <span className="text-red-400">*</span>
+              عنوان العمل <span className="text-red-400">*</span>
             </label>
             <input
               type="text"
@@ -439,6 +442,20 @@ export default function EditSeriesPage() {
                 disabled={isSubmitting}
               />
             </div>
+          </div>
+
+          <div>
+            <label className="text-sm mb-1.5 block" style={{ color: "var(--text-secondary)" }}>العاملون (المترجم، المبيض، المحرر...)</label>
+            <input
+              type="text"
+              name="staff"
+              value={formData.staff}
+              onChange={handleChange}
+              placeholder="مثال: أحمد (ترجمة)، علي (تبييض)"
+              className="w-full px-4 py-3 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary-500 transition-all"
+              style={inputStyle}
+              disabled={isSubmitting}
+            />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -536,7 +553,7 @@ export default function EditSeriesPage() {
             ) : (
               <>
                 <Pen className="w-4 h-4" />
-                تحديث المانهوا
+                تحديث العمل
               </>
             )}
           </button>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Star } from "lucide-react";
+import { formatDate } from "@/lib/utils";
 
 interface SeriesCardProps {
   series: any;
@@ -11,12 +12,11 @@ export function SeriesCard({ series, variant = "default" }: SeriesCardProps) {
   if (variant === "wide") {
     // Remanga Horizontal Card style
     return (
-      <Link
-        href={`/series/${series.slug}`}
+      <div
         className="group relative flex gap-3 p-3 rounded-2xl transition-colors hover:bg-[var(--card-hover)]"
         style={{ background: "var(--bg-tertiary)" }}
       >
-        <div className="relative w-20 sm:w-24 shrink-0 aspect-[3/4] rounded-xl overflow-hidden">
+        <Link href={`/series/${series.slug}`} className="relative w-20 sm:w-24 shrink-0 aspect-[3/4] rounded-xl overflow-hidden block">
           <Image
             src={series.cover_image_url || "/placeholder.png"}
             alt={series.title}
@@ -24,11 +24,13 @@ export function SeriesCard({ series, variant = "default" }: SeriesCardProps) {
             className="object-cover transition-transform duration-500 group-hover:scale-105"
             sizes="96px"
           />
-        </div>
+        </Link>
         <div className="flex flex-col justify-center min-w-0 flex-1">
-          <h3 className="font-bold text-[14px] sm:text-[15px] mb-1 line-clamp-2 group-hover:text-primary-500 transition-colors" style={{ color: "var(--text-primary)" }}>
-            {series.title}
-          </h3>
+          <Link href={`/series/${series.slug}`} className="block">
+            <h3 className="font-bold text-[14px] sm:text-[15px] mb-1 line-clamp-2 hover:text-primary-500 transition-colors" style={{ color: "var(--text-primary)" }}>
+              {series.title}
+            </h3>
+          </Link>
           <div className="flex items-center gap-1.5 text-xs mb-2" style={{ color: "var(--text-secondary)" }}>
              <span className="flex items-center gap-1">
                 <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
@@ -37,13 +39,30 @@ export function SeriesCard({ series, variant = "default" }: SeriesCardProps) {
              <span>•</span>
              <span className="line-clamp-1">{series.genres?.[0]?.name || "تصنيف"}</span>
           </div>
-          {series.chapters_count && (
+          {series.latest_chapters && series.latest_chapters.length > 0 ? (
+            <div className="flex flex-col gap-1.5 mt-1">
+              {series.latest_chapters.map((ch: any) => (
+                <Link
+                  key={ch.id}
+                  href={`/series/${series.slug}/${ch.chapter_number}`}
+                  className="inline-flex items-center justify-between px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-primary-600/10 hover:bg-primary-600/20 text-primary-400 border border-primary-500/10 transition-colors w-full"
+                >
+                  <span>الفصل {ch.chapter_number}</span>
+                  {ch.published_at || ch.created_at ? (
+                    <span className="text-[9px] opacity-75 font-normal">
+                      {formatDate(ch.published_at || ch.created_at)}
+                    </span>
+                  ) : null}
+                </Link>
+              ))}
+            </div>
+          ) : (
             <div className="text-[11px]" style={{ color: "var(--text-muted)" }}>
-              {series.chapters_count} فصول
+              لا توجد فصول
             </div>
           )}
         </div>
-      </Link>
+      </div>
     );
   }
 
@@ -75,7 +94,7 @@ export function SeriesCard({ series, variant = "default" }: SeriesCardProps) {
 
       <div className="flex flex-col flex-1 px-1">
         <div className="text-[11px] font-medium mb-1 line-clamp-1" style={{ color: "var(--text-muted)" }}>
-           {series.genres?.[0]?.name ? `${series.genres[0].name} ${new Date(series.created_at).getFullYear() || ''}` : "مانهوا"}
+            {series.genres?.[0]?.name ? `${series.genres[0].name} ${new Date(series.created_at).getFullYear() || ''}` : (series.type === "manga" ? "مانجا" : series.type === "manhua" ? "مانها" : "مانهوا")}
         </div>
         <h3 className="font-bold text-[13px] sm:text-[14px] line-clamp-2 leading-snug group-hover:text-primary-500 transition-colors" style={{ color: "var(--text-primary)" }}>
           {series.title}

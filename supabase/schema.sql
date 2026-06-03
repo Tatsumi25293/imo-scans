@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS series (
   description TEXT,
   author TEXT,
   artist TEXT,
+  staff TEXT,
   cover_image_url TEXT,
   banner_image_url TEXT,
   status TEXT DEFAULT 'ongoing' CHECK (status IN ('ongoing', 'completed', 'hiatus')),
@@ -128,8 +129,6 @@ CREATE POLICY "Public read chapters" ON storage.objects FOR SELECT USING (bucket
 -- Seed Data - التصنيفات الأساسية
 -- =============================================
 INSERT INTO genres (name, slug) VALUES
-  ('أكشن', 'action'),
-  ('رومانسي', 'romance'),
   ('خيال', 'fantasy'),
   ('مغامرات', 'adventure'),
   ('دراما', 'drama'),
@@ -137,7 +136,14 @@ INSERT INTO genres (name, slug) VALUES
   ('رعب', 'horror'),
   ('خارق للطبيعة', 'supernatural'),
   ('حياة مدرسية', 'school-life'),
-  ('فنون قتالية', 'martial-arts')
+  ('فنون قتالية', 'martial-arts'),
+  ('Type-Moon', 'type-moon'),
+  ('سينين', 'seinen'),
+  ('غموض', 'mystery'),
+  ('تحقيق', 'detective'),
+  ('سحر', 'magic'),
+  ('نفسي', 'psychological'),
+  ('فنتازيا', 'fantazia')
 ON CONFLICT (slug) DO NOTHING;
 
 -- =============================================

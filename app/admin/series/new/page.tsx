@@ -37,6 +37,7 @@ export default function NewSeriesPage() {
     description: "",
     author: "",
     artist: "",
+    staff: "",
     status: "ongoing",
     type: "manhwa",
   });
@@ -123,6 +124,7 @@ export default function NewSeriesPage() {
           description: formData.description,
           author: formData.author,
           artist: formData.artist,
+          staff: formData.staff,
           status: formData.status,
           type: formData.type,
           cover_image_url,
@@ -131,7 +133,7 @@ export default function NewSeriesPage() {
         .single();
 
       if (seriesError)
-        throw new Error("فشل حفظ المانهوا: " + seriesError.message);
+        throw new Error("فشل حفظ العمل: " + seriesError.message);
 
       // 3. Insert Genres
       if (selectedGenres.length > 0 && seriesData) {
@@ -178,7 +180,7 @@ export default function NewSeriesPage() {
             <CheckCircle2 className="w-10 h-10 text-emerald-400" />
           </div>
           <h2 className="text-xl font-bold mb-2" style={{ color: "var(--text-primary)" }}>تمت الإضافة بنجاح!</h2>
-          <p className="text-sm" style={{ color: "var(--text-muted)" }}>جاري التحويل إلى قائمة المانهوا...</p>
+          <p className="text-sm" style={{ color: "var(--text-muted)" }}>جاري التحويل إلى قائمة الأعمال...</p>
         </div>
       </div>
     );
@@ -197,7 +199,7 @@ export default function NewSeriesPage() {
         </Link>
         <div>
           <h1 className="text-2xl font-bold" style={{ color: "var(--text-primary)" }}>
-            إضافة مانهوا جديدة
+            إضافة عمل جديد
           </h1>
           <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
             ستُرفع الصورة إلى Vultr Object Storage تلقائياً
@@ -304,7 +306,7 @@ export default function NewSeriesPage() {
 
           <div>
             <label className="text-sm mb-1.5 block" style={{ color: "var(--text-secondary)" }}>
-              عنوان المانهوا <span className="text-red-400">*</span>
+              عنوان العمل <span className="text-red-400">*</span>
             </label>
             <input
               type="text"
@@ -380,6 +382,20 @@ export default function NewSeriesPage() {
                 disabled={isSubmitting}
               />
             </div>
+          </div>
+
+          <div>
+            <label className="text-sm mb-1.5 block" style={{ color: "var(--text-secondary)" }}>العاملون (المترجم، المبيض، المحرر...)</label>
+            <input
+              type="text"
+              name="staff"
+              value={formData.staff}
+              onChange={handleChange}
+              placeholder="مثال: أحمد (ترجمة)، علي (تبييض)"
+              className="w-full px-4 py-3 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary-500 transition-all"
+              style={inputStyle}
+              disabled={isSubmitting}
+            />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -477,7 +493,7 @@ export default function NewSeriesPage() {
             ) : (
               <>
                 <Pen className="w-4 h-4" />
-                حفظ المانهوا
+                حفظ العمل
               </>
             )}
           </button>

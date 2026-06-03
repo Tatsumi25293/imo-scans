@@ -82,7 +82,7 @@ export default function EditChapterPage({
 
       if (error) {
         if (error.code === "23505")
-          throw new Error("رقم الفصل هذا موجود مسبقاً لهذه المانهوا.");
+          throw new Error("رقم الفصل هذا موجود مسبقاً لهذا العمل.");
         throw new Error("فشل تعديل الفصل: " + error.message);
       }
 
@@ -128,7 +128,7 @@ export default function EditChapterPage({
             تعديل معلومات الفصل
           </h1>
           <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
-            المانهوا: <strong className="text-primary-400">{series?.title}</strong>
+            العمل: <strong className="text-primary-400">{series?.title}</strong>
           </p>
         </div>
       </div>

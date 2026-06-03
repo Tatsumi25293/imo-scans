@@ -3,17 +3,40 @@ import { Series, Genre, Chapter, ChapterPage, SeriesWithGenres, ChapterWithPages
 // =============================================
 // Mock Genres
 // =============================================
+const fantasy: Genre = { id: "g3", name: "خيال", slug: "fantasy", created_at: new Date().toISOString() };
+const adventure: Genre = { id: "g4", name: "مغامرات", slug: "adventure", created_at: new Date().toISOString() };
+const drama: Genre = { id: "g5", name: "دراما", slug: "drama", created_at: new Date().toISOString() };
+const comedy: Genre = { id: "g6", name: "كوميدي", slug: "comedy", created_at: new Date().toISOString() };
+const horror: Genre = { id: "g7", name: "رعب", slug: "horror", created_at: new Date().toISOString() };
+const supernatural: Genre = { id: "g8", name: "خارق للطبيعة", slug: "supernatural", created_at: new Date().toISOString() };
+const schoolLife: Genre = { id: "g9", name: "حياة مدرسية", slug: "school-life", created_at: new Date().toISOString() };
+const martialArts: Genre = { id: "g10", name: "فنون قتالية", slug: "martial-arts", created_at: new Date().toISOString() };
+
+// New genres
+const typeMoon: Genre = { id: "g11", name: "Type-Moon", slug: "type-moon", created_at: new Date().toISOString() };
+const seinen: Genre = { id: "g12", name: "سينين", slug: "seinen", created_at: new Date().toISOString() };
+const mystery: Genre = { id: "g13", name: "غموض", slug: "mystery", created_at: new Date().toISOString() };
+const detective: Genre = { id: "g14", name: "تحقيق", slug: "detective", created_at: new Date().toISOString() };
+const magic: Genre = { id: "g15", name: "سحر", slug: "magic", created_at: new Date().toISOString() };
+const psychological: Genre = { id: "g16", name: "نفسي", slug: "psychological", created_at: new Date().toISOString() };
+const fantazia: Genre = { id: "g17", name: "فنتازيا", slug: "fantazia", created_at: new Date().toISOString() };
+
 export const mockGenres: Genre[] = [
-  { id: "g1", name: "أكشن", slug: "action", created_at: new Date().toISOString() },
-  { id: "g2", name: "رومانسي", slug: "romance", created_at: new Date().toISOString() },
-  { id: "g3", name: "خيال", slug: "fantasy", created_at: new Date().toISOString() },
-  { id: "g4", name: "مغامرات", slug: "adventure", created_at: new Date().toISOString() },
-  { id: "g5", name: "دراما", slug: "drama", created_at: new Date().toISOString() },
-  { id: "g6", name: "كوميدي", slug: "comedy", created_at: new Date().toISOString() },
-  { id: "g7", name: "رعب", slug: "horror", created_at: new Date().toISOString() },
-  { id: "g8", name: "خارق للطبيعة", slug: "supernatural", created_at: new Date().toISOString() },
-  { id: "g9", name: "حياة مدرسية", slug: "school-life", created_at: new Date().toISOString() },
-  { id: "g10", name: "فنون قتالية", slug: "martial-arts", created_at: new Date().toISOString() },
+  fantasy,
+  adventure,
+  drama,
+  comedy,
+  horror,
+  supernatural,
+  schoolLife,
+  martialArts,
+  typeMoon,
+  seinen,
+  mystery,
+  detective,
+  magic,
+  psychological,
+  fantazia,
 ];
 
 // =============================================
@@ -27,6 +50,7 @@ export const mockSeries: SeriesWithGenres[] = [
     description: "في عالم مليء بالوحوش والسحر، يجد البطل نفسه في قاع الترتيب بين الصيادين. لكن بعد حادثة غامضة في زنزانة مظلمة، يحصل على قوة خارقة تغير مصيره إلى الأبد. رحلة ملحمية من القاع إلى القمة!",
     author: "كيم سونغ هو",
     artist: "بارك جونغ",
+    staff: "تسنيم / محمد",
     cover_image_url: "https://picsum.photos/seed/manhwa1/400/560",
     banner_image_url: "https://picsum.photos/seed/banner1/1200/400",
     status: "ongoing",
@@ -37,7 +61,7 @@ export const mockSeries: SeriesWithGenres[] = [
     published_at: "2024-01-15T00:00:00Z",
     created_at: "2024-01-15T00:00:00Z",
     updated_at: new Date().toISOString(),
-    genres: [mockGenres[0], mockGenres[2], mockGenres[3]],
+    genres: [fantasy, adventure, magic],
     chapters_count: 150,
   },
   {
@@ -47,6 +71,7 @@ export const mockSeries: SeriesWithGenres[] = [
     description: "بعد ألف عام من السجن في بُعد آخر، يعود أعظم ساحر عرفه العالم ليجد أن السحر قد اندثر. الآن عليه إعادة بناء قوته من الصفر في عالم تسيطر عليه التكنولوجيا.",
     author: "لي مين هو",
     artist: "تشوي يونغ",
+    staff: "خالد",
     cover_image_url: "https://picsum.photos/seed/manhwa2/400/560",
     banner_image_url: "https://picsum.photos/seed/banner2/1200/400",
     status: "ongoing",
@@ -57,7 +82,7 @@ export const mockSeries: SeriesWithGenres[] = [
     published_at: "2024-03-20T00:00:00Z",
     created_at: "2024-03-20T00:00:00Z",
     updated_at: new Date().toISOString(),
-    genres: [mockGenres[2], mockGenres[0], mockGenres[7]],
+    genres: [fantasy, supernatural, magic],
     chapters_count: 95,
   },
   {
@@ -67,6 +92,7 @@ export const mockSeries: SeriesWithGenres[] = [
     description: "في مدينة مستقبلية حيث يمتلك الأقوياء كل شيء، شاب يتيم يكتشف قدرة فريدة تجعل جسده صلباً كالفولاذ. لكن هذه القوة تأتي بثمن باهظ قد يكلفه إنسانيته.",
     author: "هوانغ دونغ",
     artist: "هوانغ دونغ",
+    staff: "أبو بكر",
     cover_image_url: "https://picsum.photos/seed/manhwa3/400/560",
     banner_image_url: "https://picsum.photos/seed/banner3/1200/400",
     status: "ongoing",
@@ -77,7 +103,7 @@ export const mockSeries: SeriesWithGenres[] = [
     published_at: "2024-05-10T00:00:00Z",
     created_at: "2024-05-10T00:00:00Z",
     updated_at: new Date().toISOString(),
-    genres: [mockGenres[0], mockGenres[4], mockGenres[9]],
+    genres: [drama, martialArts, seinen],
     chapters_count: 78,
   },
   {
@@ -87,6 +113,7 @@ export const mockSeries: SeriesWithGenres[] = [
     description: "أميرة من عائلة نبيلة تُجبر على الزواج من إمبراطور مخيف يُلقب بـ'الوحش'. لكنها تكتشف أن خلف القناع الوحشي يختبئ رجل مكسور يحتاج لمن يفهمه.",
     author: "يون سو يونغ",
     artist: "كيم هانا",
+    staff: "فريق المترجمين",
     cover_image_url: "https://picsum.photos/seed/manhwa4/400/560",
     banner_image_url: "https://picsum.photos/seed/banner4/1200/400",
     status: "ongoing",
@@ -97,7 +124,7 @@ export const mockSeries: SeriesWithGenres[] = [
     published_at: "2024-02-01T00:00:00Z",
     created_at: "2024-02-01T00:00:00Z",
     updated_at: new Date().toISOString(),
-    genres: [mockGenres[1], mockGenres[4], mockGenres[2]],
+    genres: [drama, fantasy, psychological],
     chapters_count: 120,
   },
   {
@@ -107,6 +134,7 @@ export const mockSeries: SeriesWithGenres[] = [
     description: "في عالم مقسم بين النور والظلام، يولد طفل يحمل قوى الجانبين. محكوم عليه بالنفي، يبدأ رحلته ليصبح أقوى كائن في الوجود ويوحد العالمين.",
     author: "جانغ تشول",
     artist: "سيو جون",
+    staff: "علي",
     cover_image_url: "https://picsum.photos/seed/manhwa5/400/560",
     banner_image_url: "https://picsum.photos/seed/banner5/1200/400",
     status: "completed",
@@ -117,7 +145,7 @@ export const mockSeries: SeriesWithGenres[] = [
     published_at: "2023-06-15T00:00:00Z",
     created_at: "2023-06-15T00:00:00Z",
     updated_at: new Date().toISOString(),
-    genres: [mockGenres[0], mockGenres[2], mockGenres[7]],
+    genres: [fantasy, supernatural, typeMoon],
     chapters_count: 200,
   },
   {
@@ -127,6 +155,7 @@ export const mockSeries: SeriesWithGenres[] = [
     description: "فتاة تستطيع رؤية الأرواح تجد نفسها متورطة في حرب قديمة بين عالم الأحياء والأموات. عليها إيجاد طريقة لإنقاذ كلا العالمين قبل فوات الأوان.",
     author: "شين يونا",
     artist: "بارك سولا",
+    staff: "طارق",
     cover_image_url: "https://picsum.photos/seed/manhwa6/400/560",
     banner_image_url: "https://picsum.photos/seed/banner6/1200/400",
     status: "ongoing",
@@ -137,7 +166,7 @@ export const mockSeries: SeriesWithGenres[] = [
     published_at: "2024-07-01T00:00:00Z",
     created_at: "2024-07-01T00:00:00Z",
     updated_at: new Date().toISOString(),
-    genres: [mockGenres[7], mockGenres[6], mockGenres[4]],
+    genres: [supernatural, horror, drama],
     chapters_count: 45,
   },
   {
@@ -147,6 +176,7 @@ export const mockSeries: SeriesWithGenres[] = [
     description: "في أكاديمية تدرب أقوى المحاربين، طالب عادي يمتلك سراً خطيراً: إنه ابن أعظم شرير في التاريخ. الآن عليه إثبات أنه مختلف عن والده.",
     author: "كيم تايهو",
     artist: "لي جينسو",
+    staff: "نواف",
     cover_image_url: "https://picsum.photos/seed/manhwa7/400/560",
     banner_image_url: "https://picsum.photos/seed/banner7/1200/400",
     status: "ongoing",
@@ -157,7 +187,7 @@ export const mockSeries: SeriesWithGenres[] = [
     published_at: "2024-04-10T00:00:00Z",
     created_at: "2024-04-10T00:00:00Z",
     updated_at: new Date().toISOString(),
-    genres: [mockGenres[0], mockGenres[3], mockGenres[8]],
+    genres: [adventure, schoolLife, mystery],
     chapters_count: 88,
   },
   {
@@ -167,6 +197,7 @@ export const mockSeries: SeriesWithGenres[] = [
     description: "طاهٍ موهوب يكتشف أن الطعام الذي يطبخه يمنح قوى خارقة. في عالم تتصارع فيه الممالك، تصبح وصفاته أقوى سلاح على الإطلاق!",
     author: "أو سونغ",
     artist: "هان مينجو",
+    staff: "عمر",
     cover_image_url: "https://picsum.photos/seed/manhwa8/400/560",
     banner_image_url: "https://picsum.photos/seed/banner8/1200/400",
     status: "ongoing",
@@ -177,7 +208,7 @@ export const mockSeries: SeriesWithGenres[] = [
     published_at: "2024-08-20T00:00:00Z",
     created_at: "2024-08-20T00:00:00Z",
     updated_at: new Date().toISOString(),
-    genres: [mockGenres[5], mockGenres[2], mockGenres[3]],
+    genres: [comedy, fantasy, adventure],
     chapters_count: 35,
   },
 ];

@@ -16,27 +16,33 @@ export default async function HomePage() {
   // Fetch from Supabase
   const { data: featuredData } = await supabase
     .from("series")
-    .select(`*, genres:series_genres(genre:genres(*)), chapters(count)`)
+    .select(`*, genres:series_genres(genre:genres(*)), chapters(id, chapter_number, title, published_at, created_at)`)
     .limit(4)
     .order("views_count", { ascending: false });
 
   const { data: popularData } = await supabase
     .from("series")
-    .select(`*, genres:series_genres(genre:genres(*)), chapters(count)`)
+    .select(`*, genres:series_genres(genre:genres(*)), chapters(id, chapter_number, title, published_at, created_at)`)
     .limit(6)
     .order("views_count", { ascending: false });
 
   const { data: latestData } = await supabase
     .from("series")
-    .select(`*, genres:series_genres(genre:genres(*)), chapters(count)`)
+    .select(`*, genres:series_genres(genre:genres(*)), chapters(id, chapter_number, title, published_at, created_at)`)
     .limit(8)
     .order("updated_at", { ascending: false });
 
-  const formatSeriesList = (data: any[]) => data?.map(s => ({
-    ...s,
-    genres: s.genres?.map((g: any) => g.genre) || [],
-    chapters_count: s.chapters?.[0]?.count || 0
-  })) || [];
+  const formatSeriesList = (data: any[]) => data?.map(s => {
+    const sortedChapters = s.chapters
+      ? [...s.chapters].sort((a: any, b: any) => b.chapter_number - a.chapter_number)
+      : [];
+    return {
+      ...s,
+      genres: s.genres?.map((g: any) => g.genre) || [],
+      chapters_count: s.chapters?.length || 0,
+      latest_chapters: sortedChapters.slice(0, 2)
+    };
+  }) || [];
 
   const featured = formatSeriesList(featuredData || []);
   const popular = formatSeriesList(popularData || []);
@@ -129,7 +135,7 @@ export default async function HomePage() {
                 </div>
                 <h1 className="text-3xl lg:text-4xl font-black mb-4">لا توجد أعمال حالياً!</h1>
                 <p className="text-[var(--text-muted)] max-w-md mx-auto mb-8 text-lg">
-                   تم إعداد المنصة بنجاح. ابدأ بإضافة المانهوا الأولى لتظهر هنا لزوار موقعك.
+                   تم إعداد المنصة بنجاح. ابدأ بإضافة عمل جديد ليظهر هنا لزوار موقعك.
                 </p>
                 <Link href="/admin/series/new" className="btn-primary">
                    الذهاب إلى لوحة الإدارة

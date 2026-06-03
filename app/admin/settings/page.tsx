@@ -6,7 +6,7 @@ import { Save, Globe, Palette, Database } from "lucide-react";
 export default function AdminSettingsPage() {
   const [siteName, setSiteName] = useState("IMO Scans");
   const [siteDescription, setSiteDescription] = useState(
-    "اقرأ أفضل المانهوا والويبتون مترجمة إلى العربية"
+    "اقرأ أفضل المانجا والمانهوا مترجمة إلى العربية"
   );
   const [saved, setSaved] = useState(false);
 

@@ -19,8 +19,8 @@ const ADMIN_PASSWORD = "imoscans2024";
 
 const sidebarLinks = [
   { href: "/admin", label: "لوحة التحكم", icon: LayoutDashboard },
-  { href: "/admin/series", label: "إدارة المانهوا", icon: BookOpen },
-  { href: "/admin/series/new", label: "إضافة مانهوا", icon: Upload },
+  { href: "/admin/series", label: "إدارة الأعمال", icon: BookOpen },
+  { href: "/admin/series/new", label: "إضافة عمل جديد", icon: Upload },
   { href: "/admin/settings", label: "الإعدادات", icon: Settings },
 ];
 

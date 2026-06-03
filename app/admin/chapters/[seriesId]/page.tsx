@@ -130,7 +130,7 @@ export default function SeriesChaptersPage({ params }: { params: Promise<{ serie
         {chapters.length === 0 ? (
           <div className="text-center p-12">
             <p className="text-lg font-medium mb-2" style={{ color: "var(--text-primary)" }}>لا توجد فصول حالياً</p>
-            <p className="text-sm" style={{ color: "var(--text-secondary)" }}>قم بإضافة فصول لهذه المانهوا.</p>
+            <p className="text-sm" style={{ color: "var(--text-secondary)" }}>قم بإضافة فصول لهذا العمل.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Star, Eye, BookOpen, User, Paintbrush, ArrowLeft, Clock } from "lucide-react";
+import { Star, Eye, BookOpen, User, Paintbrush, ArrowLeft, Clock, Users } from "lucide-react";
 import { formatNumber, formatDate, getStatusLabel, getStatusColor, getTypeLabel } from "@/lib/utils";
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const supabase = await createClient();
   const { data: series } = await supabase
     .from("series")
-    .select("title, description, cover_image_url, author, artist, type, status, rating")
+    .select("title, description, cover_image_url, author, artist, staff, type, status, rating")
     .eq("slug", slug)
     .single();
 
@@ -195,6 +195,11 @@ export default async function SeriesDetailPage({ params }: PageProps) {
               {formattedSeries.artist && (
                 <span className="flex items-center gap-1.5 whitespace-nowrap">
                   <Paintbrush className="w-4 h-4 flex-shrink-0" /> {formattedSeries.artist}
+                </span>
+              )}
+              {formattedSeries.staff && (
+                <span className="flex items-center gap-1.5 whitespace-nowrap">
+                  <Users className="w-4 h-4 flex-shrink-0" /> العاملون: {formattedSeries.staff}
                 </span>
               )}
               <span className="flex items-center gap-1.5 whitespace-nowrap">
