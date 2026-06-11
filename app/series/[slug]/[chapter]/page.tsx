@@ -231,7 +231,7 @@ export default async function ChapterReaderPage({ params }: PageProps) {
             pages.map((page, i) => (
               <div key={page.id}>
                 <img
-                  src={page.image_url}
+                  src={`/api/img/${slug}/${chapterNumber}/${page.page_number}`}
                   alt={`صفحة ${page.page_number}`}
                   loading={i < 3 ? "eager" : "lazy"}
                   className="w-full max-w-full h-auto object-contain mx-auto"
