@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, Star, Eye, TrendingUp, Clock, Flame, Sparkles } from "lucide-react";
 import { SeriesCard } from "@/components/series/SeriesCard";
+import { TrendingCard } from "@/components/series/TrendingCard";
 import { mockGenres } from "@/lib/mock-data";
 import { formatNumber } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/server";
@@ -189,10 +190,10 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 lg:gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {popular.map((series, i) => (
               <div key={series.id} style={{ animation: `slide-up 0.4s ease-out ${i * 0.08}s both` }}>
-                <SeriesCard series={series} />
+                <TrendingCard series={series} />
               </div>
             ))}
           </div>
