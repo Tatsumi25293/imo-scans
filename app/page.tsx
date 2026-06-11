@@ -60,88 +60,104 @@ export default async function HomePage() {
       {/* Hero Section */}
       {/* ============================================= */}
       {featured.length > 0 ? (
-        <section className="relative overflow-hidden" style={{ background: "var(--bg-secondary)" }}>
-          <div className="relative h-[65vh] min-h-[500px] w-full flex items-center justify-center overflow-hidden">
-            {/* Background blurred image */}
-            <div className="absolute inset-0 w-full h-full">
+        <section className="relative overflow-hidden w-full bg-[var(--bg-secondary)] border-b border-[var(--border-color)]">
+          <div className="relative min-h-[480px] lg:min-h-[550px] w-full flex items-center justify-center overflow-hidden py-10 px-4 md:px-8">
+            
+            {/* Background blurred cover */}
+            <div className="absolute inset-0 w-full h-full z-0 select-none pointer-events-none">
               <Image
-                src={featured[0]?.cover_image_url || "/placeholder.png"}
-                alt="Background"
+                src={featured[0].cover_image_url || "/placeholder.png"}
+                alt="Backdrop"
                 fill
-                className="object-cover opacity-30 md:opacity-40 blur-sm scale-105"
+                className="object-cover opacity-20 blur-[30px] scale-110"
                 priority
               />
-              <div className="absolute inset-0 gradient-overlay" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-primary)] via-[var(--bg-primary)]/80 to-[var(--bg-primary)]/40" />
             </div>
 
-            <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex flex-col lg:flex-row items-center gap-8 pt-10">
-              <div className="w-full lg:w-1/2 text-center lg:text-right">
-                <span className="inline-block px-3 py-1 rounded-full bg-primary-500/20 text-primary-400 text-xs font-bold mb-4 backdrop-blur-md border border-primary-500/30">
-                  ⭐ أحدث الإضافات
+            {/* Inner Content Grid */}
+            <div className="relative z-10 max-w-7xl mx-auto w-full flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12">
+              
+              {/* Text Info */}
+              <div className="flex-1 text-center md:text-right flex flex-col items-center md:items-start min-w-0">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/40 text-white text-xs font-bold mb-4 border border-white/20 backdrop-blur-md">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  العمل المميز اليوم
                 </span>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-black mb-4 leading-tight text-white drop-shadow-xl text-glow">
-                  {featured[0]?.title}
-                </h1>
-                <p className="text-base md:text-lg text-gray-300 mb-8 max-w-2xl mx-auto lg:mx-0 line-clamp-3">
-                  {featured[0]?.description || "لا يوجد وصف متاح لهذه المانهوا حالياً."}
-                </p>
                 
-                <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-black mb-4 leading-tight text-white drop-shadow-md text-glow">
+                  {featured[0].title}
+                </h1>
+                
+                <p className="text-sm md:text-base leading-relaxed text-gray-300 max-w-xl mb-6 line-clamp-3 font-medium">
+                  {featured[0].description || "اقرأ هذا العمل المميز مترجماً بالكامل بجودة عالية على IMO Scans."}
+                </p>
+
+                {/* Meta details */}
+                <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mb-6">
+                  <span className="px-3 py-1 rounded-full bg-white/5 text-xs text-gray-300 border border-white/10 font-semibold">
+                    {featured[0].type === "manhwa" ? "مانهوا" : featured[0].type === "manga" ? "مانجا" : "مانها"}
+                  </span>
+                  
+                  <span className="flex items-center gap-1 px-3 py-1 rounded-full bg-white/5 text-xs text-amber-400 border border-white/10 font-bold">
+                    <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                    {featured[0].rating}
+                  </span>
+
+                  <span className="flex items-center gap-1 px-3 py-1 rounded-full bg-white/5 text-xs text-gray-400 border border-white/10 font-semibold">
+                    <Eye className="w-3.5 h-3.5" />
+                    {formatNumber(featured[0].views_count || 0)} مشاهدة
+                  </span>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto justify-center md:justify-start">
                   <Link
-                    href={`/series/${featured[0]?.slug}`}
-                    className="btn-primary !px-8 !py-3.5 !text-base"
+                    href={`/series/${featured[0].slug}`}
+                    className="w-full sm:w-auto px-8 py-3 rounded-full text-sm font-semibold text-white bg-[#ff0000] hover:bg-[#cc0000] transition-all duration-200 inline-flex items-center justify-center gap-2 shadow-[0_0_18px_rgba(255,0,0,0.45)]"
                   >
                     ابدأ القراءة
                     <ArrowLeft className="w-4 h-4" />
                   </Link>
-                  <div className="flex items-center gap-4 text-sm text-gray-300 bg-white/5 px-4 py-2.5 rounded-xl backdrop-blur-md border border-white/10">
-                    <span className="flex items-center gap-1.5">
-                      <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                      <span className="font-bold text-white">{featured[0]?.rating}</span>
-                    </span>
-                    <span className="w-1 h-1 rounded-full bg-gray-500" />
-                    <span className="flex items-center gap-1.5">
-                      <Eye className="w-4 h-4" />
-                      {formatNumber(featured[0]?.views_count || 0)}
-                    </span>
-                  </div>
+                  <Link
+                    href={`/series/${featured[0].slug}`}
+                    className="w-full sm:w-auto px-6 py-3 rounded-full text-sm font-semibold text-white border border-white/20 hover:bg-white/5 transition-all duration-200 text-center"
+                  >
+                    تفاصيل العمل
+                  </Link>
                 </div>
               </div>
 
-              <div className="hidden lg:block w-1/3 max-w-[320px] relative perspective-1000">
-                <div className="aspect-[3/4] relative rounded-2xl overflow-hidden premium-shadow transform rotate-y-[-10deg] rotate-x-[5deg] hover:rotate-y-0 transition-transform duration-500">
+              {/* Cover Card - floating premium layout */}
+              <div className="w-full max-w-[220px] md:max-w-[280px] shrink-0 z-10 select-none">
+                <div className="aspect-[3/4] relative rounded-[28px] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.8)] border-2 border-white/10 group hover:scale-[1.02] transition-transform duration-300">
                   <Image
-                    src={featured[0]?.cover_image_url || "/placeholder.png"}
-                    alt={featured[0]?.title}
+                    src={featured[0].cover_image_url || "/placeholder.png"}
+                    alt={featured[0].title}
                     fill
                     className="object-cover"
-                    sizes="320px"
+                    sizes="(max-width: 768px) 220px, 280px"
                     priority
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
                 </div>
               </div>
+
             </div>
           </div>
-          {/* Decorative gradient line */}
-          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-500/30 to-transparent" />
         </section>
       ) : (
-        <section className="relative overflow-hidden">
-          <div className="relative h-[50vh] min-h-[400px] w-full flex items-center justify-center overflow-hidden">
-             <div className="absolute inset-0 bg-gradient-to-br from-[var(--bg-secondary)] to-[var(--bg-primary)]"></div>
-             <div className="relative z-10 text-center px-4">
-                <div className="w-20 h-20 mx-auto mb-6 bg-primary-500/10 rounded-2xl flex items-center justify-center rotate-3 border border-primary-500/20">
-                   <Sparkles className="w-10 h-10 text-primary-500" />
-                </div>
-                <h1 className="text-3xl lg:text-4xl font-black mb-4">لا توجد أعمال حالياً!</h1>
-                <p className="text-[var(--text-muted)] max-w-md mx-auto mb-8 text-lg">
-                   تم إعداد المنصة بنجاح. ابدأ بإضافة عمل جديد ليظهر هنا لزوار موقعك.
-                </p>
-                <Link href="/admin/series/new" className="btn-primary">
-                   الذهاب إلى لوحة الإدارة
-                </Link>
-             </div>
+        <section className="relative overflow-hidden w-full bg-[var(--bg-secondary)] py-16 px-4 text-center">
+          <div className="w-20 h-20 mx-auto mb-6 bg-primary-500/10 rounded-2xl flex items-center justify-center border border-primary-500/20 text-primary-400">
+            <Sparkles className="w-10 h-10" />
           </div>
+          <h1 className="text-2xl font-black mb-2">لا توجد أعمال حالياً!</h1>
+          <p className="text-sm max-w-sm mx-auto mb-6" style={{ color: "var(--text-muted)" }}>
+            تم إعداد المنصة بنجاح. ابدأ بإضافة عمل جديد ليظهر هنا لزوار موقعك.
+          </p>
+          <Link href="/admin/series/new" className="btn-primary">
+            إضافة عمل جديد
+          </Link>
         </section>
       )}
 
