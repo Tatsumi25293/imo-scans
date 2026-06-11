@@ -2,7 +2,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, Star, Eye, TrendingUp, Clock, Flame, Sparkles } from "lucide-react";
 import { SeriesCard } from "@/components/series/SeriesCard";
-import { TrendingCard } from "@/components/series/TrendingCard";
 import { mockGenres } from "@/lib/mock-data";
 import { formatNumber } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/server";
@@ -61,91 +60,59 @@ export default async function HomePage() {
       {/* Hero Section */}
       {/* ============================================= */}
       {featured.length > 0 ? (
-        <section className="relative overflow-hidden w-full bg-[var(--bg-secondary)] border-b border-[var(--border-color)]">
-          <div className="relative min-h-[480px] lg:min-h-[550px] w-full flex items-center justify-center overflow-hidden py-10 px-4 md:px-8">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full select-none">
+          <Link
+            href={`/series/${featured[0].slug}`}
+            className="group relative block w-full aspect-[3/4] md:aspect-[16/7] rounded-[32px] overflow-hidden shadow-[0_15px_35px_rgba(0,0,0,0.5)] border border-[var(--border-color)] hover:translate-y-[-2px] transition-all duration-300 animate-fade-in"
+          >
+            {/* Background Image */}
+            <Image
+              src={featured[0].cover_image_url || "/placeholder.png"}
+              alt={featured[0].title}
+              fill
+              className="object-cover transition-transform duration-750 group-hover:scale-102"
+              priority
+              sizes="(max-width: 1024px) 100vw, 1200px"
+            />
             
-            {/* Background blurred cover */}
-            <div className="absolute inset-0 w-full h-full z-0 select-none pointer-events-none">
-              <Image
-                src={featured[0].cover_image_url || "/placeholder.png"}
-                alt="Backdrop"
-                fill
-                className="object-cover opacity-20 blur-[30px] scale-110"
-                priority
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-primary)] via-[var(--bg-primary)]/80 to-[var(--bg-primary)]/40" />
+            {/* Dark overlay for readability */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent transition-opacity duration-300 group-hover:via-black/50" />
+
+            {/* Top Left Badge (Type) */}
+            <div className="absolute top-5 left-5 z-10 px-4 py-1.5 rounded-full bg-black/60 backdrop-blur-md text-[11px] font-bold text-white border border-white/10">
+              {featured[0].type === "manhwa" ? "مانهوا" : featured[0].type === "manga" ? "مانجا" : "مانها"}
             </div>
 
-            {/* Inner Content Grid */}
-            <div className="relative z-10 max-w-7xl mx-auto w-full flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12">
-              
-              {/* Text Info */}
-              <div className="flex-1 text-center md:text-right flex flex-col items-center md:items-start min-w-0">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/40 text-white text-xs font-bold mb-4 border border-white/20 backdrop-blur-md">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  العمل المميز اليوم
-                </span>
-                
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-black mb-4 leading-tight text-white drop-shadow-md text-glow">
-                  {featured[0].title}
-                </h1>
-                
-                <p className="text-sm md:text-base leading-relaxed text-gray-300 max-w-xl mb-6 line-clamp-3 font-medium">
-                  {featured[0].description || "اقرأ هذا العمل المميز مترجماً بالكامل بجودة عالية على IMO Scans."}
-                </p>
-
-                {/* Meta details */}
-                <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mb-6">
-                  <span className="px-3 py-1 rounded-full bg-white/5 text-xs text-gray-300 border border-white/10 font-semibold">
-                    {featured[0].type === "manhwa" ? "مانهوا" : featured[0].type === "manga" ? "مانجا" : "مانها"}
-                  </span>
-                  
-                  <span className="flex items-center gap-1 px-3 py-1 rounded-full bg-white/5 text-xs text-amber-400 border border-white/10 font-bold">
-                    <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                    {featured[0].rating}
-                  </span>
-
-                  <span className="flex items-center gap-1 px-3 py-1 rounded-full bg-white/5 text-xs text-gray-400 border border-white/10 font-semibold">
-                    <Eye className="w-3.5 h-3.5" />
-                    {formatNumber(featured[0].views_count || 0)} مشاهدة
-                  </span>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto justify-center md:justify-start">
-                  <Link
-                    href={`/series/${featured[0].slug}`}
-                    className="w-full sm:w-auto px-8 py-3 rounded-full text-sm font-semibold text-white bg-[#ff0000] hover:bg-[#cc0000] transition-all duration-200 inline-flex items-center justify-center gap-2 shadow-[0_0_18px_rgba(255,0,0,0.45)]"
-                  >
-                    ابدأ القراءة
-                    <ArrowLeft className="w-4 h-4" />
-                  </Link>
-                  <Link
-                    href={`/series/${featured[0].slug}`}
-                    className="w-full sm:w-auto px-6 py-3 rounded-full text-sm font-semibold text-white border border-white/20 hover:bg-white/5 transition-all duration-200 text-center"
-                  >
-                    تفاصيل العمل
-                  </Link>
-                </div>
+            {/* Center/Bottom Overlay (Azora Style) */}
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center p-6 text-center mt-10">
+              {/* Trending/Featured Badge */}
+              <div className="inline-flex items-center gap-1.5 px-4.5 py-1.5 rounded-full bg-[#f59e0b] text-black text-[11px] font-black uppercase mb-3 shadow-lg">
+                <span>🔥 رائج</span>
               </div>
 
-              {/* Cover Card - floating premium layout */}
-              <div className="w-full max-w-[220px] md:max-w-[280px] shrink-0 z-10 select-none">
-                <div className="aspect-[3/4] relative rounded-[28px] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.8)] border-2 border-white/10 group hover:scale-[1.02] transition-transform duration-300">
-                  <Image
-                    src={featured[0].cover_image_url || "/placeholder.png"}
-                    alt={featured[0].title}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 220px, 280px"
-                    priority
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
-                </div>
-              </div>
+              {/* Title */}
+              <h1 className="text-white text-3xl md:text-4xl lg:text-5xl font-black mb-4 leading-tight drop-shadow-md text-glow max-w-2xl">
+                {featured[0].title}
+              </h1>
 
+              {/* Genres List */}
+              <div className="flex flex-wrap items-center justify-center gap-2 max-w-xl">
+                {featured[0].genres?.slice(0, 3).map((g: any) => (
+                  <span
+                    key={g.id}
+                    className="px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-[11px] font-bold text-gray-200 border border-white/5"
+                  >
+                    {g.name}
+                  </span>
+                ))}
+                {(!featured[0].genres || featured[0].genres.length === 0) && (
+                  <span className="px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-[11px] font-bold text-gray-200 border border-white/5">
+                    أخرى
+                  </span>
+                )}
+              </div>
             </div>
-          </div>
+          </Link>
         </section>
       ) : (
         <section className="relative overflow-hidden w-full bg-[var(--bg-secondary)] py-16 px-4 text-center">
@@ -190,10 +157,10 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 lg:gap-5">
             {popular.map((series, i) => (
               <div key={series.id} style={{ animation: `slide-up 0.4s ease-out ${i * 0.08}s both` }}>
-                <TrendingCard series={series} />
+                <SeriesCard series={series} />
               </div>
             ))}
           </div>
