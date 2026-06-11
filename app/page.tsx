@@ -19,7 +19,7 @@ export default async function HomePage() {
     .from("series")
     .select(`*, genres:series_genres(genre:genres(*)), chapters(id, chapter_number, title, published_at, created_at)`)
     .limit(8)
-    .order("views_count", { ascending: false });
+    .order("updated_at", { ascending: false });
 
   const { data: popularData } = await supabase
     .from("series")
@@ -71,7 +71,7 @@ export default async function HomePage() {
                 عمل اليوم المميز
               </h2>
               <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
-                الأكثر قراءة ومتابعة اليوم مرتبة حسب المشاهدات
+                أحدث الأعمال المضافة والفصول المحدثة مؤخراً
               </p>
             </div>
           </div>
