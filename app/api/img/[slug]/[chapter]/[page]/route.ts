@@ -126,7 +126,13 @@ export async function GET(
     // If it's an absolute Vultr URL
     if (imageUrl.includes("vultrobjects.com")) {
       const url = new URL(imageUrl);
-      const s3Key = url.pathname.replace(/^\/[^/]+\//, ""); // strip /bucket-name/
+      let s3Key = url.pathname;
+      const bucketPrefix = `/${BUCKET}/`;
+      if (s3Key.startsWith(bucketPrefix)) {
+        s3Key = s3Key.substring(bucketPrefix.length);
+      } else {
+        s3Key = s3Key.replace(/^\//, "");
+      }
       return await fetchFromS3(s3Key);
     }
 
