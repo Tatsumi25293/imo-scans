@@ -6,7 +6,7 @@ import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { CollectionJsonLd, BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://imo-scans.vercel.app";
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://atlus.vercel.app";
 
 export async function generateMetadata({
   searchParams,
@@ -16,17 +16,17 @@ export async function generateMetadata({
   const resolvedSearchParams = await searchParams;
   const typeFilter = resolvedSearchParams.type;
 
-  let title = "جميع المانجا والمانهوا المترجمة | IMO Scans";
+  let title = "جميع المانجا والمانهوا المترجمة | ATLUS";
   let description = "تصفح مكتبتنا الكاملة من المانجا والمانهوا والويبتون المترجمة إلى العربية بجودة عالية.";
 
   if (typeFilter === "manga") {
-    title = "جميع المانجا المترجمة | IMO Scans";
+    title = "جميع المانجا المترجمة | ATLUS";
     description = "تصفح مكتبتنا الكاملة من المانجا اليابانية المترجمة إلى العربية بجودة عالية.";
   } else if (typeFilter === "manhwa") {
-    title = "جميع المانهوا المترجمة | IMO Scans";
+    title = "جميع المانهوا المترجمة | ATLUS";
     description = "تصفح مكتبتنا الكاملة من المانهوا الكورية المترجمة إلى العربية بجودة عالية.";
   } else if (typeFilter === "manhua") {
-    title = "جميع المانها المترجمة | IMO Scans";
+    title = "جميع المانها المترجمة | ATLUS";
     description = "تصفح مكتبتنا الكاملة من المانها الصينية المترجمة إلى العربية بجودة عالية.";
   }
 
@@ -38,9 +38,9 @@ export async function generateMetadata({
       title,
       description,
       url: `${BASE_URL}/series${typeFilter ? `?type=${typeFilter}` : ""}`,
-      siteName: "IMO Scans",
+      siteName: "ATLUS",
       locale: "ar_AR",
-      images: [{ url: "/logo-v2.png", width: 512, height: 512, alt: "IMO Scans" }],
+      images: [{ url: "/logo-v2.png", width: 512, height: 512, alt: "ATLUS" }],
     },
     twitter: {
       card: "summary",

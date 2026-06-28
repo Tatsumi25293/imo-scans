@@ -2,8 +2,8 @@ import { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "IMO Scans - مانهوا عربي",
-    short_name: "IMO Scans",
+    name: "ATLUS - مانهوا عربي",
+    short_name: "ATLUS",
     description:
       "اقرأ أفضل المانهوا والويبتون مترجمة إلى العربية. تحديثات يومية وترجمة احترافية عالية الجودة.",
     start_url: "/",

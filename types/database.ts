@@ -1,4 +1,4 @@
-// Database types for IMO Scans
+// Database types for ATLUS
 export interface Genre {
   id: string;
   name: string;

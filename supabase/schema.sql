@@ -1,5 +1,5 @@
 -- =============================================
--- IMO Scans - Database Schema for Supabase
+-- ATLUS - Database Schema for Supabase
 -- Run this in your Supabase SQL Editor
 -- =============================================
 

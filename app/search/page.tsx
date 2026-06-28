@@ -3,7 +3,7 @@ import { SeriesCard } from "@/components/series/SeriesCard";
 import { Search } from "lucide-react";
 import type { Metadata } from "next";
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://imo-scans.vercel.app";
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://atlus.vercel.app";
 
 export const dynamic = "force-dynamic";
 
@@ -18,19 +18,19 @@ export async function generateMetadata({ searchParams }: SearchPageProps): Promi
   if (!q) {
     return {
       title: "البحث في المانهوا",
-      description: "ابحث عن أفضل المانهوا والويبتون المترجمة إلى العربية على IMO Scans.",
+      description: "ابحث عن أفضل المانهوا والويبتون المترجمة إلى العربية على ATLUS.",
       robots: { index: false, follow: true },
     };
   }
 
   return {
     title: `نتائج البحث: ${q}`,
-    description: `نتائج البحث عن "${q}" - اعثر على المانهوا والويبتون المترجمة على IMO Scans.`,
+    description: `نتائج البحث عن "${q}" - اعثر على المانهوا والويبتون المترجمة على ATLUS.`,
     openGraph: {
-      title: `البحث عن: ${q} | IMO Scans`,
+      title: `البحث عن: ${q} | ATLUS`,
       description: `نتائج البحث عن "${q}" في مكتبة المانهوا والويبتون المترجمة.`,
       url: `${BASE_URL}/search?q=${encodeURIComponent(q)}`,
-      siteName: "IMO Scans",
+      siteName: "ATLUS",
       locale: "ar_AR",
     },
     robots: { index: false, follow: true },

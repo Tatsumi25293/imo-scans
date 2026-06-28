@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { mockGenres } from "@/lib/mock-data";
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://imo-scans.vercel.app";
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://atlus.vercel.app";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = await createClient();

@@ -139,7 +139,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               </div>
               <div className="min-w-0">
                 <p className="text-sm font-bold truncate" style={{ color: "var(--text-primary)" }}>لوحة التحكم</p>
-                <p className="text-[11px] truncate" style={{ color: "var(--text-muted)" }}>IMO Scans</p>
+                <p className="text-[11px] truncate" style={{ color: "var(--text-muted)" }}>ATLUS</p>
               </div>
             </div>
 

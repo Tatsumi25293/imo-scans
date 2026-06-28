@@ -38,16 +38,16 @@ type MyReactions = Record<string, boolean>;
 
 function getVisitorId(): string {
   if (typeof window === "undefined") return "server";
-  let id = localStorage.getItem("imo_visitor_id");
+  let id = localStorage.getItem("atlus_visitor_id");
   if (!id) {
     id = "v_" + Math.random().toString(36).substring(2) + Date.now().toString(36);
-    localStorage.setItem("imo_visitor_id", id);
+    localStorage.setItem("atlus_visitor_id", id);
   }
   return id;
 }
 
 function getReactionsKey(seriesId?: string, chapterId?: string): string {
-  return `imo_reactions_${chapterId || seriesId || "global"}`;
+  return `atlus_reactions_${chapterId || seriesId || "global"}`;
 }
 
 function loadReactions(key: string): { counts: ReactionCounts; my: MyReactions } {

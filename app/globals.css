@@ -84,17 +84,47 @@
   
   .glass-header {
     background: var(--header-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border-color);
   }
 
-  /* Stunning Hover States - Clean without unnecessary shadows */
+  /* Premium Glassmorphic Card */
+  .glass-card {
+    background: rgba(26, 26, 33, 0.45);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .dark .glass-card {
+    background: rgba(19, 19, 26, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  .light .glass-card {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    backdrop-filter: blur(12px);
+  }
+
+  /* Stunning Hover States */
   .card-hover {
     @apply transition-all duration-300;
   }
   .card-hover:hover {
-    transform: translateY(-2px);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px -10px rgba(43, 127, 255, 0.2);
+  }
+
+  .neon-glow {
+    box-shadow: 0 0 20px rgba(43, 127, 255, 0.25);
+  }
+
+  .text-glow {
+    text-shadow: 0 0 10px rgba(43, 127, 255, 0.4);
   }
 
   .flip-rtl {
@@ -104,59 +134,92 @@
   .dir-ltr {
     direction: ltr;
   }
+
+  /* Text gradient helper */
+  .text-gradient-primary {
+    background: linear-gradient(135deg, var(--color-primary-400), var(--color-primary-600));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .text-gradient-accent {
+    background: linear-gradient(135deg, #f59e0b, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 }
 
 @layer components {
   /* ReManga Pills Style Buttons */
   .btn-primary {
-    @apply relative px-6 py-2.5 rounded-full text-sm font-semibold text-white transition-all duration-200 inline-flex items-center justify-center gap-2;
-    background-color: var(--color-primary-600);
+    @apply relative px-6 py-2.5 rounded-full text-sm font-bold text-white transition-all duration-300 inline-flex items-center justify-center gap-2 overflow-hidden cursor-pointer select-none shadow-md active:scale-95;
+    background: linear-gradient(135deg, var(--color-primary-500), var(--color-primary-600));
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
   
   .btn-primary:hover {
-    background-color: var(--color-primary-500);
-    box-shadow: 0 0 16px rgba(43, 127, 255, 0.4);
+    background: linear-gradient(135deg, var(--color-primary-400), var(--color-primary-600));
+    box-shadow: 0 0 20px rgba(43, 127, 255, 0.45);
+    transform: translateY(-1px);
   }
 
   .btn-secondary {
-    @apply px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 inline-flex items-center justify-center gap-2;
+    @apply px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 inline-flex items-center justify-center gap-2 cursor-pointer select-none border border-[var(--border-color)] active:scale-95;
     background: var(--bg-tertiary);
     color: var(--text-primary);
   }
 
   .btn-secondary:hover {
-    background: var(--border-color);
+    background: var(--card-hover);
+    border-color: var(--text-muted);
+    transform: translateY(-1px);
   }
 
   .input-premium {
-    @apply w-full px-5 py-2.5 rounded-full text-sm outline-none transition-colors duration-200;
+    @apply w-full px-5 py-2.5 rounded-full text-sm outline-none transition-all duration-300 border border-[var(--border-color)];
     background: var(--bg-tertiary);
     color: var(--text-primary);
-    border: 1px solid var(--border-color);
   }
 
   .input-premium:focus {
     background: var(--bg-secondary);
-    border-color: var(--color-primary-600);
+    border-color: var(--color-primary-500);
+    box-shadow: 0 0 15px rgba(43, 127, 255, 0.2);
   }
   
   /* Rating Badge identical to Remanga */
   .badge-rating {
-    @apply absolute bottom-0 right-0 px-2 py-1 flex items-center gap-1 bg-black/80 text-white text-[11px] font-bold rounded-tl-xl rounded-br-2xl backdrop-blur-sm z-10;
+    @apply absolute bottom-0 right-0 px-2 py-1 flex items-center gap-1 bg-black/85 text-white text-[11px] font-bold rounded-tl-xl rounded-br-2xl backdrop-blur-md z-10 border-t border-l border-white/10;
   }
 }
 
 /* Page Transitions */
 .page-transition {
-  animation: fade-in 0.3s ease-out;
+  animation: fade-in 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes slide-up {
   from { opacity: 0; transform: translateY(15px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* Image zoom styling for reader */
+.reader-image-wrap {
+  position: relative;
+  transition: filter 0.3s ease;
+}
+
+/* Custom scrollbar layout specifically for code / lists */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+

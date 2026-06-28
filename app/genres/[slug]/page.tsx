@@ -7,7 +7,7 @@ import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { CollectionJsonLd, BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://imo-scans.vercel.app";
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://atlus.vercel.app";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!genre) return { title: "غير موجود" };
 
   const title = `أعمال تصنيف ${genre.name} مترجمة`;
-  const description = `تصفح أفضل المانجا والمانهوا والويبتون من تصنيف ${genre.name} مترجمة إلى العربية. اكتشف أحدث الأعمال في قسم ${genre.name} على IMO Scans.`;
+  const description = `تصفح أفضل المانجا والمانهوا والويبتون من تصنيف ${genre.name} مترجمة إلى العربية. اكتشف أحدث الأعمال في قسم ${genre.name} على ATLUS.`;
 
   return {
     title,
@@ -33,20 +33,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       `${genre.name} مترجم`,
       `تصنيف ${genre.name}`,
       "مانهوا مترجمة",
-      "imo scans",
+      "ATLUS",
     ],
     openGraph: {
       type: "website",
-      title: `${title} | IMO Scans`,
+      title: `${title} | ATLUS`,
       description,
       url: `${BASE_URL}/genres/${slug}`,
-      siteName: "IMO Scans",
+      siteName: "ATLUS",
       locale: "ar_AR",
       images: [{ url: "/logo-v2.png", width: 512, height: 512, alt: `أعمال ${genre.name}` }],
     },
     twitter: {
       card: "summary",
-      title: `${title} | IMO Scans`,
+      title: `${title} | ATLUS`,
       description,
     },
     alternates: {

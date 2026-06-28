@@ -9,7 +9,7 @@ import ViewTracker from "@/components/view-tracker";
 import CommentSection from "@/components/comments/CommentSection";
 import { SeriesJsonLd, BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://imo-scans.vercel.app";
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://atlus.vercel.app";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!series) return { title: "غير موجود" };
 
   const title = series.title;
-  const description = series.description || `اقرأ ${title} مترجمة إلى العربية على IMO Scans. تحديثات مستمرة وجودة ترجمة عالية.`;
+  const description = series.description || `اقرأ ${title} مترجمة إلى العربية على ATLUS. تحديثات مستمرة وجودة ترجمة عالية.`;
   const typeLabel = series.type === "manhwa" ? "مانهوا" : series.type === "manga" ? "مانجا" : "مانها";
 
   return {
@@ -42,14 +42,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       `${typeLabel} ${series.status === "ongoing" ? "مستمرة" : "مكتملة"}`,
       series.author || "",
       "مانهوا مترجمة",
-      "imo scans",
+      "ATLUS",
     ].filter(Boolean),
     openGraph: {
       type: "article",
-      title: `${title} - ${typeLabel} مترجمة | IMO Scans`,
+      title: `${title} - ${typeLabel} مترجمة | ATLUS`,
       description,
       url: `${BASE_URL}/series/${slug}`,
-      siteName: "IMO Scans",
+      siteName: "ATLUS",
       images: series.cover_image_url
         ? [
             {
@@ -64,7 +64,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
     twitter: {
       card: "summary_large_image",
-      title: `${title} | IMO Scans`,
+      title: `${title} | ATLUS`,
       description: description.slice(0, 200),
       images: series.cover_image_url ? [series.cover_image_url] : [],
     },

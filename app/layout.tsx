@@ -7,7 +7,7 @@ import { AuthProvider } from "@/components/auth/AuthProvider";
 import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://imo-scans.vercel.app";
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://atlus.vercel.app";
 
 const ibmPlexArabic = IBM_Plex_Sans_Arabic({
   variable: "--font-ibm-plex-arabic",
@@ -29,11 +29,11 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "IMO Scans - اقرأ مانجا ومانهوا مترجمة عربي",
-    template: "%s | IMO Scans",
+    default: "ATLUS - اقرأ مانجا ومانهوا مترجمة عربي",
+    template: "%s | ATLUS",
   },
   description:
-    "اقرأ أفضل المانجا والمانهوا مترجمة إلى العربية مجاناً. تحديثات يومية، ترجمة احترافية عالية الجودة. IMO Scans وجهتك الأولى لقراءة المانجا والمانهوا العربية!",
+    "اقرأ أفضل المانجا والمانهوا مترجمة إلى العربية مجاناً. تحديثات يومية، ترجمة احترافية عالية الجودة. ATLUS وجهتك الأولى لقراءة المانجا والمانهوا العربية!",
   keywords: [
     "مانهوا", "مانهوا مترجمة", "مانهوا عربي",
     "ويبتون", "ويبتون مترجم", "ويبتون عربي",
@@ -43,13 +43,13 @@ export const metadata: Metadata = {
     "manhwa", "webtoon", "manga", "manhua",
     "manhwa arabic", "webtoon arabic",
     "ترجمة مانهوا", "مانهوا اكشن", "مانهوا رومانسي",
-    "imo scans", "ايمو سكانز",
+    "ATLUS",
     "أفضل مانهوا", "مانهوا جديدة",
     "فصول مترجمة", "تحديثات يومية",
   ],
-  authors: [{ name: "IMO Scans", url: BASE_URL }],
-  creator: "IMO Scans",
-  publisher: "IMO Scans",
+  authors: [{ name: "ATLUS", url: BASE_URL }],
+  creator: "ATLUS",
+  publisher: "ATLUS",
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
@@ -77,8 +77,8 @@ export const metadata: Metadata = {
     type: "website",
     locale: "ar_AR",
     url: BASE_URL,
-    siteName: "IMO Scans",
-    title: "IMO Scans - اقرأ مانجا ومانهوا مترجمة عربي",
+    siteName: "ATLUS",
+    title: "ATLUS - اقرأ مانجا ومانهوا مترجمة عربي",
     description:
       "اقرأ أفضل المانجا والمانهوا مترجمة إلى العربية مجاناً. تحديثات يومية وترجمة احترافية عالية الجودة.",
     images: [
@@ -86,13 +86,13 @@ export const metadata: Metadata = {
         url: `${BASE_URL}/opengraph-image.png`,
         width: 1200,
         height: 630,
-        alt: "IMO Scans - اقرأ مانجا ومانهوا مترجمة عربي",
+        alt: "ATLUS - اقرأ مانجا ومانهوا مترجمة عربي",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "IMO Scans - اقرأ مانجا ومانهوا مترجمة عربي",
+    title: "ATLUS - اقرأ مانجا ومانهوا مترجمة عربي",
     description:
       "اقرأ أفضل المانجا والمانهوا مترجمة إلى العربية مجاناً. تحديثات يومية وترجمة احترافية.",
     images: [`${BASE_URL}/opengraph-image.png`],

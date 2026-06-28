@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://imo-scans.vercel.app";
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://atlus.vercel.app";
 
 // ============================================
 // Website Schema - للصفحة الرئيسية
@@ -8,8 +8,8 @@ export function WebsiteJsonLd() {
   const schema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "IMO Scans",
-    alternateName: "ايمو سكانز",
+    name: "ATLUS",
+    alternateName: "ATLUS",
     url: BASE_URL,
     description:
       "اقرأ أفضل المانجا والمانهوا مترجمة إلى العربية. تحديثات يومية وترجمة احترافية عالية الجودة.",
@@ -39,8 +39,8 @@ export function OrganizationJsonLd() {
   const schema = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "IMO Scans",
-    alternateName: "ايمو سكانز",
+    name: "ATLUS",
+    alternateName: "ATLUS",
     url: BASE_URL,
     logo: `${BASE_URL}/logo-v2.png`,
     description:
@@ -107,12 +107,12 @@ export function SeriesJsonLd({
     "@type": "ComicSeries",
     name: title,
     url: `${BASE_URL}/series/${slug}`,
-    description: description || `اقرأ ${title} مترجمة إلى العربية على IMO Scans`,
+    description: description || `اقرأ ${title} مترجمة إلى العربية على ATLUS`,
     inLanguage: "ar",
     genre: genres?.map((g) => g.name) || [],
     publisher: {
       "@type": "Organization",
-      name: "IMO Scans",
+      name: "ATLUS",
       url: BASE_URL,
     },
   };
@@ -221,7 +221,7 @@ export function CollectionJsonLd({
     inLanguage: "ar",
     isPartOf: {
       "@type": "WebSite",
-      name: "IMO Scans",
+      name: "ATLUS",
       url: BASE_URL,
     },
   };

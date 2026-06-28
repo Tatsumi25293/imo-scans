@@ -19,7 +19,7 @@ export function Footer() {
               <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
                 <BookOpen className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold text-gradient">IMO Scans</span>
+              <span className="text-xl font-bold text-gradient">ATLUS</span>
             </Link>
             <p className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>
               وجهتك الأولى لقراءة أفضل المانجا والمانهوا والويبتون مترجمة إلى العربية بجودة عالية.
@@ -86,7 +86,7 @@ export function Footer() {
           style={{ borderTop: "1px solid var(--border-color)" }}
         >
           <p className="text-sm" style={{ color: "var(--text-muted)" }}>
-            © 2024 IMO Scans. جميع الحقوق محفوظة.
+            © 2024 ATLUS. جميع الحقوق محفوظة.
           </p>
           <p className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
             اللهم صل وسلم على نبينا محمد
