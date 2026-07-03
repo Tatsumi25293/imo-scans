@@ -75,8 +75,40 @@ export async function deleteFromVultr(key: string): Promise<void> {
 }
 
 /**
- * Extract the key from a Vultr public URL
+ * Extract the key from a Vultr/S3 public URL
  */
 export function getKeyFromUrl(url: string): string {
-  return url.replace(`${CDN_URL}/`, "");
+  if (!url) return "";
+
+  // Remove CDN prefix if present
+  if (url.startsWith(CDN_URL)) {
+    return url.replace(`${CDN_URL}/`, "");
+  }
+
+  // Remove JetBackup prefix if present
+  if (url.includes("storage.jetbackup.com")) {
+    try {
+      const parsed = new URL(url);
+      return parsed.pathname.replace(/^\/imoscans\//, "").replace(/^\//, "");
+    } catch {
+      // fallback
+    }
+  }
+
+  // Remove standard Vultr host prefix if present
+  if (url.includes("vultrobjects.com")) {
+    try {
+      const parsed = new URL(url);
+      return parsed.pathname.replace(/^\/imo-scans\//, "").replace(/^\/imoscans\//, "").replace(/^\//, "");
+    } catch {
+      // fallback
+    }
+  }
+
+  // Remove proxy prefix if present
+  if (url.startsWith("/api/images/")) {
+    return url.replace("/api/images/", "");
+  }
+
+  return url;
 }

@@ -6,6 +6,30 @@ import { ChevronLeft, Plus, Trash2, Edit, Loader2, Eye, EyeOff, Layers } from "l
 import { createClient } from "@/lib/supabase/client";
 import { formatDate } from "@/lib/utils";
 
+const getS3KeyFromUrl = (url: string) => {
+  if (!url) return "";
+  const cdnUrl = "https://imo-scans.ams1.vultrobjects.com";
+  if (url.startsWith(cdnUrl)) {
+    return url.replace(`${cdnUrl}/`, "");
+  }
+  if (url.includes("storage.jetbackup.com")) {
+    try {
+      const parsed = new URL(url);
+      return parsed.pathname.replace(/^\/imoscans\//, "").replace(/^\//, "");
+    } catch {}
+  }
+  if (url.includes("vultrobjects.com")) {
+    try {
+      const parsed = new URL(url);
+      return parsed.pathname.replace(/^\/imo-scans\//, "").replace(/^\/imoscans\//, "").replace(/^\//, "");
+    } catch {}
+  }
+  if (url.startsWith("/api/images/")) {
+    return url.replace("/api/images/", "");
+  }
+  return url;
+};
+
 export default function SeriesChaptersPage({ params }: { params: Promise<{ seriesId: string }> }) {
   const resolvedParams = use(params);
   const supabase = createClient();
@@ -52,10 +76,26 @@ export default function SeriesChaptersPage({ params }: { params: Promise<{ serie
   const handleDelete = async (id: string, number: number) => {
     if (!confirm(`هل أنت متأكد من حذف الفصل ${number} نهائياً بجميع صوره؟`)) return;
     try {
-      // First delete associated images from storage if needed or let supabase handle cascade
-      // Supabase cascade will delete `chapter_pages` records because of foreign key
-      // But we might need to delete files from Vultr storage. For now, since Vultr doesn't have an easy bulk delete from client, we just delete DB record
-      // The pages are in `chapters/${resolvedParams.seriesId}/${id}/*` so it's a known path
+      // Fetch pages first to delete from S3
+      const { data: pages } = await supabase
+        .from("chapter_pages")
+        .select("image_url")
+        .eq("chapter_id", id);
+
+      if (pages && pages.length > 0) {
+        for (const page of pages) {
+          const key = getS3KeyFromUrl(page.image_url);
+          if (key) {
+            await fetch("/api/delete-file", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ key }),
+            });
+          }
+        }
+      }
+
+      // Delete chapter record
       const { error } = await supabase.from("chapters").delete().eq("id", id);
       if (error) throw error;
       setChapters((prev) => prev.filter((c) => c.id !== id));

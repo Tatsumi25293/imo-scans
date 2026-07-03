@@ -13,6 +13,13 @@ export function FeaturedSlider({ featured }: FeaturedSliderProps) {
   const sliderRef = useRef<HTMLDivElement>(null);
   const [showLeftArrow, setShowLeftArrow] = useState(true);
   const [showRightArrow, setShowRightArrow] = useState(true);
+  const [isRtl, setIsRtl] = useState(true); // default to true for Arabic site
+
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      setIsRtl(document.dir === "rtl");
+    }
+  }, []);
 
   // Check scroll position to show/hide arrows
   const checkScroll = () => {
@@ -21,7 +28,7 @@ export function FeaturedSlider({ featured }: FeaturedSliderProps) {
       
       // In RTL layouts, scrollLeft can be negative or positive depending on browser.
       // We check if we are near the boundaries.
-      const isRTL = document.dir === "rtl" || window.getComputedStyle(sliderRef.current).direction === "rtl";
+      const isRTL = isRtl || window.getComputedStyle(sliderRef.current).direction === "rtl";
       
       if (isRTL) {
         // RTL boundaries
@@ -166,22 +173,22 @@ export function FeaturedSlider({ featured }: FeaturedSliderProps) {
           <button
             onClick={() => handleScroll("right")}
             className={`hidden md:flex absolute top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full items-center justify-center bg-black/40 backdrop-blur-md border border-white/10 text-white shadow-xl hover:bg-black/60 active:scale-95 transition-all cursor-pointer ${
-              document.dir === "rtl" ? "-left-6" : "-right-6"
+              isRtl ? "-left-6" : "-right-6"
             } opacity-0 group-hover/slider:opacity-100 transition-opacity duration-300`}
             aria-label="Next featured"
           >
-            {document.dir === "rtl" ? <ChevronLeft className="w-6 h-6" /> : <ChevronRight className="w-6 h-6" />}
+            {isRtl ? <ChevronLeft className="w-6 h-6" /> : <ChevronRight className="w-6 h-6" />}
           </button>
 
           {/* Left Arrow (RTL: Scroll Forward, LTR: Scroll Back) */}
           <button
             onClick={() => handleScroll("left")}
             className={`hidden md:flex absolute top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full items-center justify-center bg-black/40 backdrop-blur-md border border-white/10 text-white shadow-xl hover:bg-black/60 active:scale-95 transition-all cursor-pointer ${
-              document.dir === "rtl" ? "-right-6" : "-left-6"
+              isRtl ? "-right-6" : "-left-6"
             } opacity-0 group-hover/slider:opacity-100 transition-opacity duration-300`}
             aria-label="Previous featured"
           >
-            {document.dir === "rtl" ? <ChevronRight className="w-6 h-6" /> : <ChevronLeft className="w-6 h-6" />}
+            {isRtl ? <ChevronRight className="w-6 h-6" /> : <ChevronLeft className="w-6 h-6" />}
           </button>
         </>
       )}
